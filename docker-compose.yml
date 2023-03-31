@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  client:
+    build: ./client
+    environment:
+      - SERVER_URI=localhost:3001
+      - SOCKET_URI=localhost:3002
+    ports:
+      - "6000:80"
+
+  server:
+    build: ./server
+    environment:
+      - DATABASE_URI=database
+    ports:
+      - "3001:3001"
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  socket-server:
+    image: socket-server
+    build: ./socket-server
+    ports:
+      - "3002:3002"
