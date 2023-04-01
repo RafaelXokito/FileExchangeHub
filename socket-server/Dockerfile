@@ -1,9 +1,9 @@
 FROM node:latest
 WORKDIR /usr/app
 
-COPY src/package.json .
+COPY package.json .
 RUN npm install
 
-COPY src/index.js .
+COPY server.js .
 
-ENTRYPOINT [ "node", "index.js" ]
+ENTRYPOINT [ "node", "server.js" ]

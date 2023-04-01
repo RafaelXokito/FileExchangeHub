@@ -1,15 +1,18 @@
 version: '3.8'
 
+name: file-exchange-hub
 services:
   client:
+    image: projnginx
     build: ./client
     environment:
       - SERVER_URI=localhost:3001
       - SOCKET_URI=localhost:3002
     ports:
-      - "6000:80"
+      - "8080:80"
 
   server:
+    image: projserver
     build: ./server
     environment:
       - DATABASE_URI=database
