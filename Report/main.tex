@@ -94,19 +94,23 @@ Decentralized file exchange \sep Microservices architecture \sep Containerizatio
 
 \section{Introduction}
 
-In recent years, cloud computing has revolutionized the way we develop, deploy, and manage software applications. This report presents a decentralized file exchange hub built with a cloud-native approach, utilizing containers, microservices, and cloud services. Our project focuses on leveraging the power of modern cloud technologies to create a scalable, resilient, and efficient file exchange system.
+The rapid growth of cloud computing and microservices has revolutionized the way applications are developed and deployed. As a result, there is an increasing need for effective strategies to manage the complexity and scalability of these systems. This report explores the design and deployment of a distributed cloud-based application that utilizes containerization and microservices to achieve high availability, performance, and maintainability.
 
-\section{Architecture}
+The application is divided into four main modules: Presentation Provider (Nginx), API (Express), Asynchronous Message Communication server, and Database (MongoDB). Each module is designed to serve a specific purpose and can scale independently to adapt to changing loads and requirements. The application also leverages Google Cloud Platform (GCP) services such as Cloud Storage Bucket for storing and managing files.
+
+The report is structured as follows: Section \ref{sec:architecture} presents the architecture of the application, detailing the purpose and design of each module. Section \ref{sec:deployment} describes the deployment process, emphasizing the use of GCP's Cloud Build and Cloud Run services to automate and streamline the deployment of the application components. Finally, the report concludes with a summary of the key findings and insights gained from the project.
+
+\section{Architecture}\label{sec:architecture}
 
 This project follows a microservices architecture, which allows for improved scalability, resilience, and maintainability. The system is divided into four main components, each responsible for a specific aspect of the application. Figure \ref{fig:architecture} presents a diagram of the architecture, illustrating the relationship between each component.
 
-%\begin{enumerate}
-%    \item Presentation Provider (Nginx): This component acts as the frontend server, hosting the React web application and serving static files. It is responsible for delivering the user interface to the clients and handling incoming HTTP requests.
-%    \item API (Express File Management Service): This component is the backend server implemented using Express.js. It manages the file uploading and downloading processes, interacting with the Database and Cloud Storage Bucket to store and retrieve files.
-%    \item Asynchronous Message Communication Server (Socket.io): This server enables real-time communication between the clients, ensuring that users in the same room receive instant updates when a new file is shared.
-%    \item Database (MongoDB): The database stores information about the rooms, users, and file metadata, including the bucket URL and timestamp. MongoDB was chosen for its flexibility, scalability, and performance.
-%    \item Cloud Storage Bucket (Google Cloud Storage): This component stores the uploaded files, providing a reliable and scalable storage solution.
-%\end{enumerate}
+\begin{enumerate}
+    \item Presentation Provider (Nginx): This component acts as the frontend server, hosting the React web application and serving static files. It is responsible for delivering the user interface to the clients and handling incoming HTTP requests.
+    \item API (Express File Management Service): This component is the backend server implemented using Express.js. It manages the file uploading and downloading processes, interacting with the Database and Cloud Storage Bucket to store and retrieve files.
+    \item Asynchronous Message Communication Server (Socket.io): This server enables real-time communication between the clients, ensuring that users in the same room receive instant updates when a new file is shared.
+    \item Database (MongoDB): The database stores information about the rooms, users, and file metadata, including the bucket URL and timestamp. MongoDB was chosen for its flexibility, scalability, and performance.
+    \item Cloud Storage Bucket (Google Cloud Storage): This component stores the uploaded files, providing a reliable and scalable storage solution.
+\end{enumerate}
 
 The following UML diagram (Figure \ref{fig:architecture}) depicts the relationships between the components:
 
@@ -133,20 +137,20 @@ To enable real-time communication and notifications within our file exchange hub
 
 \subsection{Database: MongoDB}
 
-MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. Its flexible schema and horizontal scalability make it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data.
+MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. It's flexible schema and horizontal scalability makes it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data.
 
 \subsection{Cloud Storage Bucket: Google Cloud Storage}
 
 To store and manage the actual files exchanged by users, we leverage Google Cloud Storage. This fully managed object storage service offers high availability, durability, and scalability, allowing our file exchange hub to efficiently store, retrieve, and share files.
 
-\section{Deployment}
+\section{Deployment} \label{sec:deployment}
 
 The deployment process is designed to ensure a smooth transition from development to production, leveraging the power of Google Cloud Platform (GCP) services. The deployment strategy uses GCP's Cloud Build and Cloud Run services for automating and streamlining the process. Figure \ref{fig:deployment} presents a diagram of the deployment process, illustrating the steps and relationships between each involved service.
 
-%\begin{enumerate}
-%    \item Cloud Build: This service automates the build, test, and deployment of the application components. It is triggered when changes are pushed to the repository, and it builds the Docker images for the various services in the application.
-%    \item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
-%\end{enumerate}
+\begin{enumerate}
+    \item Cloud Build: This service automates the build, test, and deployment of the application components. It is triggered when changes are pushed to the repository, and it builds the Docker images for the various services in the application.
+    \item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
+\end{enumerate}
 
 The following UML diagram (Figure \ref{fig:deployment}) depicts the deployment process and the relationships between the components:
 
@@ -166,7 +170,7 @@ For a streamlined development and deployment process, we use Google Cloud Build,
 
 \subsection{Cloud Run: Scalable Containerized Services}
 
-Our application's microservices are containerized and deployed on Google Cloud Run, a serverless platform that runs Docker containers. This allows us to easily scale our services up or down based on demand, ensuring optimal resource usage and cost-efficiency.
+Our application's microservices are containerized and deployed on Google Cloud Run, a serverless platform that runs Docker containers. This allows us to easily scale our services up or down based on demand, ensuring optimal resource usage and cost efficiency.
 
 \section{Conclusion}
 
