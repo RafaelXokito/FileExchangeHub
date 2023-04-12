@@ -64,95 +64,29 @@
 \shorttitle{Leveraging social media news}
 \shortauthors{CV Radhakrishnan et~al.}
 
-\title [mode = title]{This is a specimen $a_b$ title}                      
-\tnotemark[1,2]
 
-\tnotetext[1]{This document is the results of the research
-   project funded by the National Science Foundation.}
-
-\tnotetext[2]{The second title footnote which is a longer text matter
-   to fill through the whole text width and overflow into
-   another line in the footnotes area of the first page.}
-
-
-
-\author[1,3]{CV Radhakrishnan}[type=editor,
-                        auid=000,bioid=1,
-                        prefix=Sir,
-                        role=Researcher,
-                        orcid=0000-0001-7511-2910]
-\cormark[1]
-\fnmark[1]
-\ead{cvr_1@tug.org.in}
-\ead[url]{www.cvr.cc, cvr@sayahna.org}
+\title [mode = title]{Decentralized File Exchange Hub: A Cloud-Native Approach}                     
 
 \credit{Conceptualization of this study, Methodology, Software}
 
-\address[1]{Elsevier B.V., Radarweg 29, 1043 NX Amsterdam, The Netherlands}
-
-\author[2,4]{Han Theh Thanh}[style=chinese]
-
-\author[2,3]{CV Rajagopal}[%
-   role=Co-ordinator,
-   suffix=Jr,
-   ]
-\fnmark[2]
-\ead{cvr3@sayahna.org}
-\ead[URL]{www.sayahna.org}
-
-\credit{Data curation, Writing - Original draft preparation}
-
-\address[2]{Sayahna Foundation, Jagathy, Trivandrum 695014, India}
-
-\author%
-[1,3]
-{Rishi T.}
-\cormark[2]
-\fnmark[1,3]
-\ead{rishi@stmdocs.in}
-\ead[URL]{www.stmdocs.in}
-
-\address[3]{STM Document Engineering Pvt Ltd., Mepukada,
-    Malayinkil, Trivandrum 695571, India}
-
-\cortext[cor1]{Corresponding author}
-\cortext[cor2]{Principal corresponding author}
-\fntext[fn1]{This is the first author footnote. but is common to third
-  author as well.}
-\fntext[fn2]{Another author footnote, this is a very long footnote and
-  it should be a really long footnote. But this footnote is not yet
-  sufficiently long enough to make two lines of footnote text.}
-
-\nonumnote{This note has no numbers. In this work we demonstrate $a_b$
-  the formation Y\_1 of a new type of polariton on the interface
-  between a cuprous oxide slab and a polystyrene micro-sphere placed
-  on the slab.
-  }
+\author[1]{Rafael Pereira}[type=editor,
+                        %auid=000,bioid=1,
+                        linkedin='rafaelmendespereira',
+                        orcid=0000-0001-8313-7253]
+%\cormark[1]
+%\fnmark[1]
+\ead{rafael.m.pereira@ipleiria.pt}
+   
+\address[1]{Computer Science and Communications Research Centre, School of Technology and Management, Polytechnic of Leiria, 2411-901 Leiria, Portugal}
 
 \begin{abstract}
-This template helps you to create a properly formatted \LaTeX\ manuscript.
 
-\noindent\texttt{\textbackslash begin{abstract}} \dots 
-\texttt{\textbackslash end{abstract}} and
-\verb+\begin{keyword}+ \verb+...+ \verb+\end{keyword}+ 
-which
-contain the abstract and keywords respectively. 
+In this report, we present a decentralized file exchange hub designed using a cloud-native approach that leverages containers, microservices, and cloud services. Our architecture comprises a React-based frontend served by Nginx, an Express API for managing file transfers, a real-time communication server using Socket.IO, and MongoDB as the primary database. The application stores files in Google Cloud Storage, and our deployment pipeline is streamlined using Google Cloud Build and Cloud Run. The result is a scalable, resilient, and efficient file exchange system that demonstrates the power and flexibility of modern cloud computing technologies for software applications.
 
-\noindent Each keyword shall be separated by a \verb+\sep+ command.
 \end{abstract}
 
-\begin{graphicalabstract}
-\includegraphics{figs/grabs.pdf}
-\end{graphicalabstract}
-
-\begin{highlights}
-\item Research highlights item 1
-\item Research highlights item 2
-\item Research highlights item 3
-\end{highlights}
-
 \begin{keywords}
-quadrupole exciton \sep polariton \sep \WGM \sep \BEC
+Decentralized file exchange \sep Microservices architecture \sep Containerization \sep Cloud-native deployment \sep Real-time communication \sep Scalability and resilience
 \end{keywords}
 
 
@@ -160,56 +94,96 @@ quadrupole exciton \sep polariton \sep \WGM \sep \BEC
 
 \section{Introduction}
 
-Abbreviation Example: \gls{ai} \\
-Citation Example: \cite{Blondeletal2008}
-Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text 
-This class depends on the following packages
-for its proper functioning:
+In recent years, cloud computing has revolutionized the way we develop, deploy, and manage software applications. This report presents a decentralized file exchange hub built with a cloud-native approach, utilizing containers, microservices, and cloud services. Our project focuses on leveraging the power of modern cloud technologies to create a scalable, resilient, and efficient file exchange system.
 
-\printcredits
+\section{Architecture}
+
+This project follows a microservices architecture, which allows for improved scalability, resilience, and maintainability. The system is divided into four main components, each responsible for a specific aspect of the application. Figure \ref{fig:architecture} presents a diagram of the architecture, illustrating the relationship between each component.
+
+%\begin{enumerate}
+%    \item Presentation Provider (Nginx): This component acts as the frontend server, hosting the React web application and serving static files. It is responsible for delivering the user interface to the clients and handling incoming HTTP requests.
+%    \item API (Express File Management Service): This component is the backend server implemented using Express.js. It manages the file uploading and downloading processes, interacting with the Database and Cloud Storage Bucket to store and retrieve files.
+%    \item Asynchronous Message Communication Server (Socket.io): This server enables real-time communication between the clients, ensuring that users in the same room receive instant updates when a new file is shared.
+%    \item Database (MongoDB): The database stores information about the rooms, users, and file metadata, including the bucket URL and timestamp. MongoDB was chosen for its flexibility, scalability, and performance.
+%    \item Cloud Storage Bucket (Google Cloud Storage): This component stores the uploaded files, providing a reliable and scalable storage solution.
+%\end{enumerate}
+
+The following UML diagram (Figure \ref{fig:architecture}) depicts the relationships between the components:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=7cm]{architecture.png}
+    \caption{System architecture diagram}
+    \label{fig:architecture}
+\end{figure}
+
+In this architecture, each component communicates with the others through well-defined interfaces, allowing for efficient collaboration and easy maintenance. The use of containerization and cloud-native deployment further enhances the system's scalability and resilience.
+
+\subsection{Presentation Provider: Nginx-based Frontend}
+
+The presentation layer of our file exchange hub is built using a React web application. We utilize Nginx as a reverse proxy and web server to serve the static content generated by the React application. Nginx offers excellent performance, stability, and low resource usage, making it an ideal choice for our frontend.
+
+\subsection{API: Express-based File Transfer Service}
+
+Our file transfer service is implemented using Node.js with the Express framework, providing a robust and scalable API for managing file uploads and downloads. This service is responsible for handling file metadata, coordinating file transfers, and integrating with the cloud storage service for actual file storage.
+
+\subsection{Asynchronous Message Communication Server: Socket.IO}
+
+To enable real-time communication and notifications within our file exchange hub, we employ Socket.IO, a popular library for real-time web applications. This server facilitates instant messaging between users in the same room, ensuring a seamless and interactive experience for all participants.
+
+\subsection{Database: MongoDB}
+
+MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. Its flexible schema and horizontal scalability make it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data.
+
+\subsection{Cloud Storage Bucket: Google Cloud Storage}
+
+To store and manage the actual files exchanged by users, we leverage Google Cloud Storage. This fully managed object storage service offers high availability, durability, and scalability, allowing our file exchange hub to efficiently store, retrieve, and share files.
+
+\section{Deployment}
+
+The deployment process is designed to ensure a smooth transition from development to production, leveraging the power of Google Cloud Platform (GCP) services. The deployment strategy uses GCP's Cloud Build and Cloud Run services for automating and streamlining the process. Figure \ref{fig:deployment} presents a diagram of the deployment process, illustrating the steps and relationships between each involved service.
+
+%\begin{enumerate}
+%    \item Cloud Build: This service automates the build, test, and deployment of the application components. It is triggered when changes are pushed to the repository, and it builds the Docker images for the various services in the application.
+%    \item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
+%\end{enumerate}
+
+The following UML diagram (Figure \ref{fig:deployment}) depicts the deployment process and the relationships between the components:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{deployment.png}
+    \caption{Deployment process diagram}
+    \label{fig:deployment}
+\end{figure}
+
+The deployment process ensures that the application components are consistently built and deployed across environments, minimizing human error and facilitating continuous integration and delivery.
+
+
+\subsection{Cloud Build: Continuous Integration and Deployment}
+
+For a streamlined development and deployment process, we use Google Cloud Build, a managed service for building, testing, and deploying container images. This service automates the process of building Docker images from our source code and deploying them to Google Cloud Run, ensuring a consistent and reliable deployment pipeline.
+
+\subsection{Cloud Run: Scalable Containerized Services}
+
+Our application's microservices are containerized and deployed on Google Cloud Run, a serverless platform that runs Docker containers. This allows us to easily scale our services up or down based on demand, ensuring optimal resource usage and cost-efficiency.
+
+\section{Conclusion}
+
+This report has presented a decentralized file exchange hub designed with a cloud-native approach. By leveraging containers, microservices, and cloud services, we have created a scalable, resilient, and efficient system for exchanging files. Our use of modern technologies such as Nginx, Express, Socket.IO, MongoDB, and Google Cloud services demonstrates the power and flexibility of cloud computing for modern software applications.
 
 %% Loading bibliography style file
 %\bibliographystyle{model1-num-names}
 %\bibliographystyle{cas-model2-names}
-\bibliographystyle{plain} % Estilo de Bibliografia
+\bibliographystyle{unsrt} % Estilo de Bibliografia
 % Loading bibliography database
 \bibliography{cas-refs}
 
 
 %\vskip3pt
 
-\bio{}
-Author biography without author photo.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-\endbio
-
-\bio{figs/pic1}
-Author biography with author photo.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-\endbio
-
-\bio{figs/pic1}
-Author biography with author photo.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
-Author biography. Author biography. Author biography.
+\bio{figs/bioFig}
+My name is Rafael Pereira, I'm 22 years old, and I'm an MSc Computer Engineering Student and Researcher at Polytechnic of Leiria. I'm extremely curious about the technology world, ambitious for knowledge in this area, I'm dedicated to doing my work. The programming thing always got me, and every day it grows. Today I'm looking for interesting projects, that can make me think and learn every day.
 \endbio
 
 \end{document}
