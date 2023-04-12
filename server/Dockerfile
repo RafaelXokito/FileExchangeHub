@@ -9,6 +9,6 @@ COPY ./index.js .
 RUN mkdir models
 COPY ./models/* ./models
 
-CMD mkdir uploads
+RUN mkdir uploads
 
 ENTRYPOINT [ "node", "index.js" ]

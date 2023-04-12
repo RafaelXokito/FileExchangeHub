@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "deploy": "node server.js && docker build -t rafaelxokito/fileexchangehubsocketserver:latest . && docker push rafaelxokito/fileexchangehubsocketserver:latest",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
