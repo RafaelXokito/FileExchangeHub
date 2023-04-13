@@ -4,20 +4,13 @@ terraform {
       source = "kreuzwerker/docker"
       version = "~> 3.0.1"
     }
-    # google = {
-    #   source = "hashicorp/google"
-    #   version = "4.58.0"
-    # }
+    google = {
+      source = "hashicorp/google"
+      version = "4.58.0"
+    }
   }
 }
 provider "docker" {}
-# provider "google" {
-#   project = var.project_id
-# }
-
-# resource "google_compute_network" "vpc_network" {
-#   name = "terraform-network"
-# }
 
 resource "docker_image" "client" {
   name = var.client_image
@@ -39,81 +32,111 @@ resource "docker_image" "database" {
   keep_locally = false
 }
 
+# GOOGLE
 
-# resource "google_cloud_run_v2_service" "default" {
-#   name     = "client-service"
-#   location = "us-central1"
-#   ingress = "INGRESS_TRAFFIC_ALL"
+provider "google" {
+  credentials = file("auth.json")
+  project = var.project_id
+  region  = "us-central1"
+}
 
-#   template {
-#     containers {
-#       image = var.client_image
-#       ports {
-#         container_port = 80
-#       }
-#     }
-#   }
-# }
+locals {
+  mongo_connection_string = var.mongo_connection_string
+}
 
-# resource "google_cloud_run_v2_service" "server" {
-#   name     = "server-service"
-#   location = "us-central1"
-#   ingress = "INGRESS_TRAFFIC_ALL"
 
-#   template {
-#     containers {
-#       image = var.server_image
-#       ports {
-#         container_port = 80
-#       }
-#     }
-#   }
-# }
+resource "google_cloud_run_service" "client" {
+  name     = "client-service"
+  location = "us-central1"
 
-# resource "google_cloud_run_v2_service" "socket_server" {
-#   name     = "socket-server-service"
-#   location = "us-central1"
-#   ingress = "INGRESS_TRAFFIC_ALL"
+  template {
+    spec {
+      containers {
+        image = var.client_image
+        env {
+          name  = "MONGO_CONNECTION_STRING"
+          value = local.mongo_connection_string
+        }
+      }
+    }
+  }
 
-#   template {
-#     containers {
-#       image = var.socket_server_image
-#       ports {
-#         container_port = 80
-#       }
-#     }
-#   }
-# }
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
 
-# resource "google_sql_database_instance" "mongodb_instance" {
-#   name             = "mongodb-instance"
-#   database_version = "MONGODB_4_2"
-#   region           = "us-central1"
+resource "google_cloud_run_service" "server" {
+  name     = "server-service"
+  location = "us-central1"
 
-#   settings {
-#     tier = "db-f1-micro"
+  template {
+    spec {
+      containers {
+        image = var.server_image
+        env {
+          name  = "MONGO_CONNECTION_STRING"
+          value = local.mongo_connection_string
+        }
+      }
+    }
+  }
 
-#     ip_configuration {
-#       ipv4_enabled = true
-#       authorized_networks {
-#         value = "0.0.0.0/0"
-#       }
-#     }
-#   }
-# }
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
 
-# data "google_iam_policy" "public" {
-#   binding {
-#     role = "roles/run.invoker"
-#     members = [
-#       "allUsers",
-#     ]
-#   }
-# }
+resource "google_cloud_run_service" "socket_server" {
+  name     = "socket-server-service"
+  location = "us-central1"
 
-# resource "google_cloud_run_v2_service_iam_policy" "policy" {
-#   project = google_cloud_run_v2_service.default.project
-#   location = google_cloud_run_v2_service.default.location
-#   name = google_cloud_run_v2_service.default.name
-#   policy_data = data.google_iam_policy.public.policy_data
-# }
+  template {
+    spec {
+      containers {
+        image = var.socket_server_image
+        env {
+          name  = "MONGO_CONNECTION_STRING"
+          value = local.mongo_connection_string
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}
+
+data "google_iam_policy" "public" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "client_policy" {
+  project  = google_cloud_run_service.client.project
+  location = google_cloud_run_service.client.location
+  service  = google_cloud_run_service.client.name
+  policy_data = data.google_iam_policy.public.policy_data
+}
+
+resource "google_cloud_run_service_iam_policy" "server_policy" {
+  project  = google_cloud_run_service.server.project
+  location = google_cloud_run_service.server.location
+  service  = google_cloud_run_service.server.name
+  policy_data = data.google_iam_policy.public.policy_data
+}
+
+resource "google_cloud_run_service_iam_policy" "socket_server_policy" {
+  project  = google_cloud_run_service.socket_server.project
+  location = google_cloud_run_service.socket_server.location
+  service  = google_cloud_run_service.socket_server.name
+  policy_data = data.google_iam_policy.public.policy_data
+}

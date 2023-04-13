@@ -26,5 +26,10 @@ variable "client_image" {
 
 variable "database_image" {
   type        = string
-  description = "The Docker image for the client."
+  description = "The Docker image for the database."
+}
+
+variable "mongo_connection_string" {
+  type = string
+  description = "The mongo connection string"  
 }

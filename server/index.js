@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3001;
 
 var database_uri = process.env.DATABASE_URI || 'localhost';
 // Replace 'your-database-name' with the name of your database
-const MONGODB_URI = `mongodb://${database_uri}:27017/fileexchangehub`;
+const MONGODB_URI = database_uri.startsWith("mongodb+srv://") ? database_uri : `mongodb://${database_uri}:27017/fileexchangehub`;
 
 mongoose
   .connect(MONGODB_URI, {
