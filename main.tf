@@ -46,7 +46,7 @@ locals {
   mongo_connection_string = var.mongo_connection_string
 }
 
-resource "google_cloud_run_service" "client" {
+resource "google_cloud_run_v2_service" "client" {
   name     = "client-service"
   location = "us-central1"
 
@@ -56,11 +56,11 @@ resource "google_cloud_run_service" "client" {
         image = var.client_image
         env {
           name  = "SERVER_URI"
-          value = "https://${google_cloud_run_service.server.status[0].url}"
+          value = "https://${google_cloud_run_v2_service.server.status[0].url}"
         }
         env {
           name  = "SOCKET_URI"
-          value = "https://${google_cloud_run_service.socket_server.status[0].url}"
+          value = "https://${google_cloud_run_v2_service.socket_server.status[0].url}"
         }
       }
     }
@@ -72,7 +72,7 @@ resource "google_cloud_run_service" "client" {
   }
 }
 
-resource "google_cloud_run_service" "server" {
+resource "google_cloud_run_v2_service" "server" {
   name     = "server-service"
   location = "us-central1"
 
@@ -94,7 +94,7 @@ resource "google_cloud_run_service" "server" {
   }
 }
 
-resource "google_cloud_run_service" "socket_server" {
+resource "google_cloud_run_v2_service" "socket_server" {
   name     = "socket-server-service"
   location = "us-central1"
 
@@ -121,23 +121,23 @@ data "google_iam_policy" "public" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "client_policy" {
-  project  = google_cloud_run_service.client.project
-  location = google_cloud_run_service.client.location
-  service  = google_cloud_run_service.client.name
+resource "google_cloud_run_v2_service_iam_policy" "client_policy" {
+  project  = google_cloud_run_v2_service.client.project
+  location = google_cloud_run_v2_service.client.location
+  service  = google_cloud_run_v2_service.client.name
   policy_data = data.google_iam_policy.public.policy_data
 }
 
-resource "google_cloud_run_service_iam_policy" "server_policy" {
-  project  = google_cloud_run_service.server.project
-  location = google_cloud_run_service.server.location
-  service  = google_cloud_run_service.server.name
+resource "google_cloud_run_v2_service_iam_policy" "server_policy" {
+  project  = google_cloud_run_v2_service.server.project
+  location = google_cloud_run_v2_service.server.location
+  service  = google_cloud_run_v2_service.server.name
   policy_data = data.google_iam_policy.public.policy_data
 }
 
-resource "google_cloud_run_service_iam_policy" "socket_server_policy" {
-  project  = google_cloud_run_service.socket_server.project
-  location = google_cloud_run_service.socket_server.location
-  service  = google_cloud_run_service.socket_server.name
+resource "google_cloud_run_v2_service_iam_policy" "socket_server_policy" {
+  project  = google_cloud_run_v2_service.socket_server.project
+  location = google_cloud_run_v2_service.socket_server.location
+  service  = google_cloud_run_v2_service.socket_server.name
   policy_data = data.google_iam_policy.public.policy_data
 }
