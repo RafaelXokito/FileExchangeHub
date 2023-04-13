@@ -12,7 +12,7 @@ terraform {
 provider "google" {
   credentials = file("auth.json")
   project = var.project_id
-  region  = "us-central1"
+  region  = "europe-west1"
 }
 
 locals {
@@ -21,7 +21,7 @@ locals {
 
 resource "google_cloud_run_v2_service" "server" {
   name     = "server-service"
-  location = "us-central1"
+  location = "europe-west1"
   ingress = "INGRESS_TRAFFIC_ALL"
 
   template {
@@ -37,7 +37,7 @@ resource "google_cloud_run_v2_service" "server" {
 
 resource "google_cloud_run_v2_service" "socket_server" {
   name     = "socket-server-service"
-  location = "us-central1"
+  location = "europe-west1"
   ingress = "INGRESS_TRAFFIC_ALL"
   
   template {
@@ -49,7 +49,7 @@ resource "google_cloud_run_v2_service" "socket_server" {
 
 resource "google_cloud_run_v2_service" "client" {
   name     = "client-service"
-  location = "us-central1"
+  location = "europe-west1"
   ingress = "INGRESS_TRAFFIC_ALL"
 
   template {
