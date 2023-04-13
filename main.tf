@@ -124,20 +124,20 @@ data "google_iam_policy" "public" {
 resource "google_cloud_run_v2_service_iam_policy" "client_policy" {
   project  = google_cloud_run_v2_service.client.project
   location = google_cloud_run_v2_service.client.location
-  service  = google_cloud_run_v2_service.client.name
+  name  = google_cloud_run_v2_service.client.name
   policy_data = data.google_iam_policy.public.policy_data
 }
 
 resource "google_cloud_run_v2_service_iam_policy" "server_policy" {
   project  = google_cloud_run_v2_service.server.project
   location = google_cloud_run_v2_service.server.location
-  service  = google_cloud_run_v2_service.server.name
+  name  = google_cloud_run_v2_service.server.name
   policy_data = data.google_iam_policy.public.policy_data
 }
 
 resource "google_cloud_run_v2_service_iam_policy" "socket_server_policy" {
   project  = google_cloud_run_v2_service.socket_server.project
   location = google_cloud_run_v2_service.socket_server.location
-  service  = google_cloud_run_v2_service.socket_server.name
+  name  = google_cloud_run_v2_service.socket_server.name
   policy_data = data.google_iam_policy.public.policy_data
 }
