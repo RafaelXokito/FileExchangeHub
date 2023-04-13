@@ -10,6 +10,8 @@ terraform {
     }
   }
 }
+
+# DOCKER PROVIDER
 provider "docker" {}
 
 resource "docker_image" "client" {
@@ -32,7 +34,7 @@ resource "docker_image" "database" {
   keep_locally = false
 }
 
-# GOOGLE
+# GOOGLE PROVIDER
 
 provider "google" {
   credentials = file("auth.json")
