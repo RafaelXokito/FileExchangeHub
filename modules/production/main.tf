@@ -75,11 +75,11 @@ resource "google_cloud_run_v2_service" "client" {
       }
       env {
         name  = "SERVER_URI"
-        value = "https://${google_cloud_run_v2_service.server.uri}"
+        value = "${google_cloud_run_v2_service.server.uri}"
       }
       env {
         name  = "SOCKET_URI"
-        value = "https://${google_cloud_run_v2_service.socket_server.uri}"
+        value = "${google_cloud_run_v2_service.socket_server.uri}"
       }
     }
   }
