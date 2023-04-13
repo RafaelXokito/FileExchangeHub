@@ -7,7 +7,7 @@ COPY . ./
 RUN npm run build
 
 # Stage 2: Serve the app using Nginx
-FROM nginx:latest
+FROM --platform=linux/amd64 nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
@@ -18,5 +18,5 @@ COPY ./cmd.sh /docker-entrypoint.d/
 
 RUN chmod +x /docker-entrypoint.d/cmd.sh
 
-EXPOSE 80
+# EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

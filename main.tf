@@ -55,8 +55,12 @@ resource "google_cloud_run_service" "client" {
       containers {
         image = var.client_image
         env {
-          name  = "MONGO_CONNECTION_STRING"
-          value = local.mongo_connection_string
+          name  = "SERVER_URI"
+          value = "https://${google_cloud_run_service.server.status[0].url}"
+        }
+        env {
+          name  = "SOCKET_URI"
+          value = "https://${google_cloud_run_service.socket_server.status[0].url}"
         }
       }
     }
@@ -77,7 +81,7 @@ resource "google_cloud_run_service" "server" {
       containers {
         image = var.server_image
         env {
-          name  = "MONGO_CONNECTION_STRING"
+          name  = "DATABASE_URI"
           value = local.mongo_connection_string
         }
       }
@@ -98,10 +102,6 @@ resource "google_cloud_run_service" "socket_server" {
     spec {
       containers {
         image = var.socket_server_image
-        env {
-          name  = "MONGO_CONNECTION_STRING"
-          value = local.mongo_connection_string
-        }
       }
     }
   }
