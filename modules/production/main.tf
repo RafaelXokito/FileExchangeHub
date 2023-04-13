@@ -35,13 +35,6 @@ resource "google_cloud_run_v2_service" "server" {
   }
 }
 
-resource "google_cloud_run_v2_service_iam_policy" "server_policy" {
-  project  = google_cloud_run_v2_service.server.project
-  location = google_cloud_run_v2_service.server.location
-  name  = google_cloud_run_v2_service.server.name
-  policy_data = data.google_iam_policy.public.policy_data
-}
-
 resource "google_cloud_run_v2_service" "socket_server" {
   name     = "socket-server-service"
   location = "us-central1"
@@ -52,13 +45,6 @@ resource "google_cloud_run_v2_service" "socket_server" {
       image = var.socket_server_image
     }
   }
-}
-
-resource "google_cloud_run_v2_service_iam_policy" "socket_server_policy" {
-  project  = google_cloud_run_v2_service.socket_server.project
-  location = google_cloud_run_v2_service.socket_server.location
-  name  = google_cloud_run_v2_service.socket_server.name
-  policy_data = data.google_iam_policy.public.policy_data
 }
 
 resource "google_cloud_run_v2_service" "client" {
@@ -83,6 +69,20 @@ resource "google_cloud_run_v2_service" "client" {
       }
     }
   }
+}
+
+resource "google_cloud_run_v2_service_iam_policy" "server_policy" {
+  project  = google_cloud_run_v2_service.server.project
+  location = google_cloud_run_v2_service.server.location
+  name  = google_cloud_run_v2_service.server.name
+  policy_data = data.google_iam_policy.public.policy_data
+}
+
+resource "google_cloud_run_v2_service_iam_policy" "socket_server_policy" {
+  project  = google_cloud_run_v2_service.socket_server.project
+  location = google_cloud_run_v2_service.socket_server.location
+  name  = google_cloud_run_v2_service.socket_server.name
+  policy_data = data.google_iam_policy.public.policy_data
 }
 
 resource "google_cloud_run_v2_service_iam_policy" "client_policy" {
