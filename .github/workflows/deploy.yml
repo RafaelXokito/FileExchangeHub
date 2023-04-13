@@ -38,7 +38,7 @@ jobs:
     - name: Build and push the socket server image
       uses: docker/build-push-action@v2
       with:
-        context: socketserver
+        context: socket-server
         file: socket-server/Dockerfile
         push: true
         tags: rafaelxokito/fileexchangehubsocketserver:latest
