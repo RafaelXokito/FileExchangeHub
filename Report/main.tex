@@ -116,8 +116,8 @@ The following UML diagram (Figure \ref{fig:architecture}) depicts the relationsh
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=9cm]{architecture.pdf}
-    \caption{System architecture diagram}
+    \includegraphics[width=9cm]{architecture.png}
+    \caption{Local system architecture diagram.}
     \label{fig:architecture}
 \end{figure}
 
@@ -145,36 +145,43 @@ To store and manage the actual files exchanged by users, we leverage Azure Blob 
 
 \section{Deployment} \label{sec:deployment}
 
-The deployment process is designed to ensure a smooth transition from development to production, leveraging the power of Google Cloud Platform (GCP) services. The deployment strategy uses GCP's Cloud Build and Cloud Run services for automating and streamlining the process. Figure \ref{fig:deployment} presents a diagram of the deployment process, illustrating the steps and relationships between each involved service.
+The deployment process is designed to ensure a smooth transition from development to production, leveraging the power of Google Cloud Platform (GCP) services. The deployment strategy uses GCP's Cloud Build and Cloud Run services, along with GitHub Actions and Terraform, for automating and streamlining the process. Figure \ref{fig:deployment} presents a diagram of the deployment process, illustrating the steps and relationships between each involved service.
 
 \begin{enumerate}
-    \item Cloud Build: This service automates the build, test, and deployment of the application components. It is triggered when changes are pushed to the repository, and it builds the Docker images for the various services in the application.
-    \item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
+\item Cloud Build: This service automates the build and deployment of the application components. It is triggered by Terraform and pulls Docker images from Docker Hub, builds the application components, and pushes the images to Google Container Registry.
+\item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
 \end{enumerate}
 
-The following UML diagram (Figure \ref{fig:deployment}) depicts the deployment process and the relationships between the components:
+The following diagram (Figure \ref{fig:deployment}) depicts the deployment process and the relationships between the components:
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=8cm]{deployment.png}
-    \caption{Deployment process diagram}
-    \label{fig:deployment}
+\centering
+\includegraphics[width=8cm]{Deployment.jpeg}
+\caption{Deployment process diagram illustrating the flow: (1) Developer commit and pushes changes to the repository, (2) triggering GitHub Actions to (3) build and push Docker images to Docker Hub. (4) Terraform is initiated, applying infrastructure changes and (5) triggering Cloud Build to (6) pull images from Docker Hub. Cloud Build builds the application components and (7) pushes the images to Google Container Registry. (8) Terraform triggers Cloud Run, which (9) pulls images from the Container Registry and (10) deploys the containerized services. (11) Cloud Run handles incoming requests from end user to the deployed services.}
+\label{fig:deployment}
 \end{figure}
 
 The deployment process ensures that the application components are consistently built and deployed across environments, minimizing human error and facilitating continuous integration and delivery.
 
-
 \subsection{Cloud Build: Continuous Integration and Deployment}
 
-For a streamlined development and deployment process, we use Google Cloud Build, a managed service for building, testing, and deploying container images. This service automates the process of building Docker images from our source code and deploying them to Google Cloud Run, ensuring a consistent and reliable deployment pipeline.
+Google Cloud Build is a managed service that enables the automated building and deployment of applications in the Google Cloud Platform. It is triggered by Terraform and integrates with Docker Hub to pull the Docker images for the various services in the application. Once the images are pulled, Cloud Build builds the application components and pushes the images to Google Container Registry, making them ready for deployment on Google Cloud Run.
 
 \subsection{Cloud Run: Scalable Containerized Services}
 
-Our application's microservices are containerized and deployed on Google Cloud Run, a serverless platform that runs Docker containers. This allows us to easily scale our services up or down based on demand, ensuring optimal resource usage and cost efficiency.
+Google Cloud Run is a serverless platform that enables the deployment and management of containerized applications. By leveraging the power of containers, Cloud Run allows developers to focus on writing code without worrying about the underlying infrastructure. The platform automatically scales applications based on demand, ensuring optimal resource usage and minimizing costs.
+
+\subsection{Automated Continuous Deployment with GitHub Actions and Terraform}
+
+In order to streamline the deployment process and ensure a consistent and efficient release cycle, we implemented Continuous Deployment using GitHub Actions and Terraform. GitHub Actions automates the process of building and pushing Docker images to Docker Hub, while Terraform manages the infrastructure required to deploy and update the services on Google Cloud Run.
+
+When changes are pushed to the repository, GitHub Actions triggers an automated workflow that builds and pushes the updated Docker images for each microservice to Docker Hub. Following the successful completion of this step, the workflow then initiates the Terraform CLI to manage the deployment of the microservices to Google Cloud Run.
+
+Using Terraform, we define the infrastructure for each microservice as code, including Google Cloud Run services and IAM policies. This approach enables us to maintain a version-controlled and easily auditable infrastructure while also allowing for seamless updates and configuration changes. By integrating with GitHub Actions, we ensure that every push to the repository automatically triggers a new deployment, resulting in a streamlined and consistent release process.
 
 \section{Conclusion}
 
-This report has presented a decentralized file exchange hub designed with a cloud-native approach. By leveraging containers, microservices, and cloud services, we have created a scalable, resilient, and efficient system for exchanging files. Our use of modern technologies such as Nginx, Express, Socket.IO, MongoDB, and Google Cloud services demonstrates the power and flexibility of cloud computing for modern software applications.
+This report has presented a decentralized file exchange hub designed with a cloud-native approach. By leveraging containers, microservices, and cloud services, we have created a scalable, resilient, and efficient system for exchanging files. Our use of modern technologies such as Nginx, Express, Socket.IO, MongoDB, and Google Cloud Platform services demonstrates the power and flexibility of cloud computing for modern software applications. Additionally, the integration of GitHub Actions, Google Cloud Build, Terraform, and Google Cloud Run has streamlined the deployment process, providing a robust Continuous Integration and Continuous Deployment (CI/CD) pipeline for ensuring consistent and reliable application delivery. The decentralized file exchange hub showcases the potential for creating high-performance, scalable, and flexible systems using cutting-edge cloud technologies and best practices.
 
 %% Loading bibliography style file
 %\bibliographystyle{model1-num-names}

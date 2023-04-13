@@ -44,7 +44,6 @@ locals {
   mongo_connection_string = var.mongo_connection_string
 }
 
-
 resource "google_cloud_run_service" "client" {
   name     = "client-service"
   location = "us-central1"
