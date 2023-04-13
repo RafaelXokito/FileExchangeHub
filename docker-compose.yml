@@ -6,8 +6,9 @@ services:
     image: projnginx
     build: ./client
     environment:
-      - SERVER_URI=localhost:3001
-      - SOCKET_URI=localhost:3002
+      - SERVER_URI=http://localhost:3001
+      - SOCKET_URI=http://localhost:3002
+      - IS_PRODUCTION=FALSE
     ports:
       - "8080:80"
 

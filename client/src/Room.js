@@ -26,7 +26,7 @@ function Room() {
     async function fetchMessages() {
       try {
         const response = await axios.get(
-          `http://__SERVER_URI__/api/rooms/${roomCode}/messages`
+          `__SERVER_URI__/api/rooms/${roomCode}/messages`
         );
         
         if (response.status === 200) {
@@ -78,7 +78,7 @@ function Room() {
 
     try {
       const response = await axios.post(
-        `http://__SERVER_URI__/api/rooms/${roomCode}/messages`,
+        `__SERVER_URI__/api/rooms/${roomCode}/messages`,
         formData,
         {
           headers: {

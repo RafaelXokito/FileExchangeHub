@@ -15,7 +15,7 @@ export const createRoom = async () => {
     const roomCode = generateRoomCode();
     try {
       // Replace with your API endpoint
-      const response = await axios.post('http://__SERVER_URI__/api/rooms', {
+      const response = await axios.post('__SERVER_URI__/api/rooms', {
         roomCode: roomCode,
       });
   
@@ -36,7 +36,7 @@ export const createRoom = async () => {
 export const joinRoom = async (roomCode) => {
     try {
         // Replace with your API endpoint
-        const response = await axios.get(`http://__SERVER_URI__/api/rooms/${roomCode}`);
+        const response = await axios.get(`__SERVER_URI__/api/rooms/${roomCode}`);
         
         if (response.status === 200) {
           // If room exists, navigate to the room page
