@@ -49,7 +49,7 @@ jobs:
     - name: Build and push the file gateway image
       uses: docker/build-push-action@v2
       with:
-        context: socket-server
+        context: file-gateway
         file: file-gateway/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest
