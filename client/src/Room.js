@@ -88,13 +88,13 @@ function Room() {
       );
         
       socket.emit('sendMessage', roomCode, response.data.message);
-      // setMessages([...messages, response.data.message]);
-      fileInput.value = ""; // Clear the file input
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Error uploading file:", error);
-    }
-    setIsLoading(false);
+        // setMessages([...messages, response.data.message]);
+        fileInput.value = ""; // Clear the file input
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        alert("Error uploading file:", error);
+      }
+      setIsLoading(false);
   };
 
   return (
@@ -109,7 +109,7 @@ function Room() {
         <div className="messagesContainer">
           {messages.map((message, index) => (
             <div key={index} className="message">
-              <a href={message.fileUrl} target="_blank" rel="noreferrer">
+              <a href={`__SERVER_URI__/api/rooms/${roomCode}/messages${message.fileUrl}`} target="_blank" rel="noreferrer">
                 Download File
               </a>
               <span>({new Date(message.timestamp).toLocaleString()})</span>

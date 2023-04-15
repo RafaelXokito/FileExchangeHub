@@ -19,6 +19,11 @@ variable "socket_server_image" {
   description = "The Docker image for the Socket.io server."
 }
 
+variable "file_gateway_image" {
+  type        = string
+  description = "The Docker image for the file-gateway server."
+}
+
 variable "mongo_connection_string" {
   type = string
   description = "The mongo connection string"  
@@ -27,4 +32,24 @@ variable "mongo_connection_string" {
 variable "client_image" {
   type        = string
   description = "The Docker image for the client."
+}
+
+variable "azure_client_id" {
+  type        = string
+  description = "The azure client id."
+}
+
+variable "azure_client_secret" {
+  type        = string
+  description = "The azure client secret."
+}
+
+variable "azure_subscription_id" {
+  type        = string
+  description = "The subscription id."
+}
+
+variable "azure_tenant_id" {
+  type        = string
+  description = "The tenant id."
 }

@@ -45,9 +45,18 @@ jobs:
         file: socket-server/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:latest
+    
+    - name: Build and push the file gateway image
+      uses: docker/build-push-action@v2
+      with:
+        context: socket-server
+        file: file-gateway/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest
 
     - name: Set up Google Cloud credentials
       run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
+      run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 

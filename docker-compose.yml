@@ -1,6 +1,5 @@
 version: '3.8'
 
-name: file-exchange-hub
 services:
   client:
     image: projnginx
@@ -8,25 +7,37 @@ services:
     environment:
       - SERVER_URI=http://localhost:3001
       - SOCKET_URI=http://localhost:3002
-      - IS_PRODUCTION=FALSE
     ports:
-      - "8080:80"
+      - "8080:8080"
 
-  server:
+  api-server:
     image: projserver
     build: ./server
     environment:
       - DATABASE_URI=database
+      - FILE_GATEWAY_URI=http://file-gateway:3003
     ports:
       - "3001:3001"
-
-  database:
-    image: mongo
-    ports:
-      - "27017:27017"
+    volumes:
+      - ./server/uploads:/usr/app/uploads
 
   socket-server:
     image: socket-server
     build: ./socket-server
     ports:
       - "3002:3002"
+
+  file-gateway:
+    image: file-gateway
+    build: ./file-gateway
+    environment:
+      - IS_PRODUCTION=FALSE
+    ports:
+      - '3003:3003'
+    volumes:
+      - ./file-gateway/uploads:/usr/app/uploads
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
