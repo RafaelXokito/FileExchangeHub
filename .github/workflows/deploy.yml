@@ -65,6 +65,9 @@ jobs:
     - name: Terraform init
       run: terraform init -target=module.production
 
+    - name: Terraform refresh
+      run: terraform refresh -target=module.production
+
     - name: Terraform plan
       run: terraform plan -target=module.production
 
