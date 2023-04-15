@@ -68,8 +68,9 @@ jobs:
     - name: Terraform destroy
       run: terraform destroy -auto-approve -target=module.production
 
-    - name: Terraform plan
-      run: terraform plan -target=module.production
+    # - name: Terraform plan
+    #   run: terraform plan -target=module.production
 
-    - name: Terraform apply
-      run: terraform apply -auto-approve -target=module.production
+    # - name: Terraform apply
+    #   run: terraform apply -auto-approve -target=module.production
+      
