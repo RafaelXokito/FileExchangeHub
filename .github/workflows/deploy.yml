@@ -65,12 +65,12 @@ jobs:
     - name: Terraform init
       run: terraform init -target=module.production
 
-    - name: Terraform destroy
-      run: terraform destroy -auto-approve -target=module.production
+    - name: Terraform refresh
+      run: terraform refresh -target=module.production
 
-    # - name: Terraform plan
-    #   run: terraform plan -target=module.production
+    - name: Terraform plan
+      run: terraform plan -target=module.production
 
-    # - name: Terraform apply
-    #   run: terraform apply -auto-approve -target=module.production
+    - name: Terraform apply
+      run: terraform apply -auto-approve -target=module.production
       
