@@ -59,6 +59,10 @@ resource "google_cloud_run_v2_service" "file-gateway" {
   template {
     containers {
       image = var.file_gateway_image
+      env {
+        name  = "IS_PRODUCTION"
+        value = "TRUE"
+      }
     }
   }
 }
