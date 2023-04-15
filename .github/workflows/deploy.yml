@@ -55,8 +55,7 @@ jobs:
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest
 
     - name: Set up Google Cloud credentials
-      run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
-      run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
+      run: echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json; echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
