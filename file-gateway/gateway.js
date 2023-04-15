@@ -16,6 +16,10 @@ const upload = multer({ storage: storage.storage });
 
 app.use(cors());
 
+app.listen(PORT, () => {
+  console.log(`Gateway running on port ${PORT}`);
+});
+
 app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -45,8 +49,4 @@ app.get("/files/:filename", async (req, res) => {
   } catch (error) {
     res.status(404).json({ error: "File not found" });
   }
-});
-
-app.listen(PORT, () => {
-    console.log(`Gateway running on port ${PORT}`);
 });
