@@ -89,7 +89,7 @@ resource "google_cloud_run_v2_service" "client" {
 
 resource "google_storage_bucket" "bucket" {
   name          = "fileexchange-bucket"
-  location      = "EU"
+  location      = "europe-west1"
   force_destroy = true
   storage_class = "STANDARD"
 
