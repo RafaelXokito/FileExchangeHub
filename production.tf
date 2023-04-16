@@ -22,5 +22,6 @@ terraform {
   backend "gcs" {
     bucket = "fileexchangehub-terraform"
     prefix  = "terraform/state"
+    credentials = "./auth.json"
   }
 }

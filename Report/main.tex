@@ -153,12 +153,12 @@ The deployment process is designed to ensure a smooth transition from developmen
 \item Cloud Run: This service deploys the containerized applications on a fully managed platform, providing automatic scaling and load balancing. It ensures that the services are highly available and resilient.
 \end{enumerate}
 
-Figure \ref{fig:deployment} depicts the deployment process and the relationships between the components, illustrating the following flow: (1) The developer commits and pushes changes to the repository, (2) which triggers GitHub Actions to (3) build and push Docker images to Docker Hub. (4) Terraform is then initiated, applying infrastructure changes, and (5) subsequently triggering Cloud Run to (6) pull images from Docker Hub and (7) deploy the containerized services.
+Figure \ref{fig:deployment} depicts the deployment process and the relationships between the components, illustrating the following flow: (1) The developer commits and pushes changes to the repository, (2) which triggers GitHub Actions to (3) build and push Docker images to Docker Hub. (4) Terraform is then initiated, applying infrastructure changes, (5) retrieving and writing the Terraform state to the cloud storage bucket as the remote backend for persistence and collaboration, and (6) subsequently triggering Cloud Run to (7) pull images from Docker Hub and (8) deploy the containerized services.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=8cm]{Deployment.pdf}
-\caption{Provisioning process diagram.}
+\includegraphics[width=8cm]{Deployment.jpeg}
+\caption{Production provisioning process diagram.}
 \label{fig:deployment}
 \end{figure}
 
