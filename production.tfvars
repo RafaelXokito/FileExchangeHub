@@ -1,10 +1,5 @@
 external_port = 3000
 
-server_image_tag = ""
-socket_server_image_tag = ""
-file_gateway_image_tag  = ""
-client_image_tag        = ""
-
 project_id = "fileexchangehub"
 server_image      = "rafaelxokito/fileexchangehubserver"
 socket_server_image = "rafaelxokito/fileexchangehubsocketserver"
