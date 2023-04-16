@@ -75,8 +75,8 @@ jobs:
     - name: Terraform Init
       run: terraform init -target=module.production
 
-    - name: Terraform Destroy
-       run: terraform destroy -target=module.production -auto-approve
+    - name: Terraform destroy
+      run: terraform destroy -auto-approve -target=module.production
 
     # - name: Terraform Validate
     #   run: terraform validate -var-file=production.tfvars
