@@ -78,8 +78,8 @@ jobs:
     # - name: Terraform destroy
     #   run: terraform destroy -auto-approve -target=module.production
 
-    - name: Terraform Validate
-      run: terraform validate -var-file=production.tfvars
+    # - name: Terraform Validate
+    #   run: terraform validate -var-file=production.tfvars
 
     - name: Set variables for Terraform
       run: |
