@@ -76,7 +76,7 @@ jobs:
       run: terraform init -target=module.production
 
     - name: Terraform Validate
-      run: terraform validate -target=module.production
+      run: terraform validate
 
     - name: Terraform Plan
       run: terraform plan -target=module.production -var "client_image_tag=${{ github.sha }}" -var "server_image_tag=${{ github.sha }}" -var "socket_server_image_tag=${{ github.sha }}" -var "file_gateway_image_tag=${{ github.sha }}"
