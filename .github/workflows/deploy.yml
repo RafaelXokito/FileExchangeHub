@@ -81,15 +81,15 @@ jobs:
     # - name: Terraform Validate
     #   run: terraform validate -var-file=production.tfvars
 
-    # - name: Set variables for Terraform
-    #   run: |
-    #     echo "socket_server_image_tag = \"${{ github.sha }}\"" >> production.tfvars
-    #     echo "file_gateway_image_tag = \"${{ github.sha }}\"" >> production.tfvars
-    #     echo "client_image_tag = \"${{ github.sha }}\"" >> production.tfvars
-    #     echo "server_image_tag = \"${{ github.sha }}\"" >> production.tfvars
+    - name: Set variables for Terraform
+      run: |
+        echo "socket_server_image_tag = \"${{ github.sha }}\"" >> production.tfvars
+        echo "file_gateway_image_tag = \"${{ github.sha }}\"" >> production.tfvars
+        echo "client_image_tag = \"${{ github.sha }}\"" >> production.tfvars
+        echo "server_image_tag = \"${{ github.sha }}\"" >> production.tfvars
 
-    # - name: Terraform Plan
-    #   run: terraform plan -target=module.production -var-file=production.tfvars
+    - name: Terraform Plan
+      run: terraform plan -target=module.production -var-file=production.tfvars
 
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve -target=module.production -var-file=production.tfvars
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -target=module.production -var-file=production.tfvars
