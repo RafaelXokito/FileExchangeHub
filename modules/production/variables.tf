@@ -27,26 +27,31 @@ variable "file_gateway_image" {
 variable "client_image" {
   type        = string
   description = "The Docker image for the client."
+  default = "latest"
 }
 
 variable "server_image_tag" {
   type        = string
   description = "The Docker image_tag for the Express server."
+  default = "latest"
 }
 
 variable "socket_server_image_tag" {
   type        = string
   description = "The Docker image_tag for the Socket.io server."
+  default = "latest"
 }
 
 variable "file_gateway_image_tag" {
   type        = string
   description = "The Docker image_tag for the file-gateway server."
+  default = "latest"
 }
 
 variable "client_image_tag" {
   type        = string
   description = "The Docker image_tag for the client."
+  default = "latest"
 }
 
 variable "mongo_connection_string" {
