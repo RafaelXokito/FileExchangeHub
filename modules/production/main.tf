@@ -1,4 +1,11 @@
 terraform {
+  cloud {
+    organization = "fileexchangehub"
+
+    workspaces {
+      name = "fileexchangehub"
+    }
+  }
   required_providers {
     google = {
       source = "hashicorp/google"
