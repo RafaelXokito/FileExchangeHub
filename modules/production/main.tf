@@ -1,10 +1,7 @@
 terraform {
-  cloud {
-    organization = "fileexchangehub"
-
-    workspaces {
-      name = "fileexchangehub"
-    }
+  backend "gcs" {
+    bucket = "fileexchangehub-terraform"
+    prefix = "state"
   }
   required_providers {
     google = {
