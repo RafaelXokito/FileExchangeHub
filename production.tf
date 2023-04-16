@@ -21,6 +21,6 @@ module "production" {
 terraform {
   backend "gcs" {
     bucket = "fileexchangehub-terraform"
-    prefix = "state"
+    prefix  = "terraform/state"
   }
 }
