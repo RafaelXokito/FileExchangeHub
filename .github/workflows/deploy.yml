@@ -79,7 +79,7 @@ jobs:
       run: terraform validate -target=module.production
 
     - name: Terraform Plan
-      run: terraform plan -target=module.production
+      run: terraform plan -target=module.production -var "client_image_tag=${{ github.sha }}" -var "server_image_tag=${{ github.sha }}" -var "socket_server_image_tag=${{ github.sha }}" -var "file_gateway_image_tag=${{ github.sha }}"
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -target=module.production
+      run: terraform apply -auto-approve -target=module.production -var "client_image_tag=${{ github.sha }}" -var "server_image_tag=${{ github.sha }}" -var "socket_server_image_tag=${{ github.sha }}" -var "file_gateway_image_tag=${{ github.sha }}"

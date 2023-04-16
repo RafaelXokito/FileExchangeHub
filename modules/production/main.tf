@@ -37,7 +37,7 @@ resource "google_cloud_run_v2_service" "server" {
 
   template {
     containers {
-      image = var.server_image
+      image = "${var.server_image}:${var.server_image_tag}"
       env {
         name  = "DATABASE_URI"
         value = local.mongo_connection_string
@@ -53,7 +53,7 @@ resource "google_cloud_run_v2_service" "socket_server" {
   
   template {
     containers {
-      image = var.socket_server_image
+      image = "${var.socket_server_image}:${var.socket_server_image_tag}"
     }
   }
 }
@@ -65,7 +65,7 @@ resource "google_cloud_run_v2_service" "file-gateway" {
   
   template {
     containers {
-      image = var.file_gateway_image
+      image = "${var.file_gateway_image}:${var.file_gateway_image_tag}"
       env {
         name  = "IS_PRODUCTION"
         value = "TRUE"
@@ -81,7 +81,7 @@ resource "google_cloud_run_v2_service" "client" {
 
   template {
     containers {
-      image = var.client_image
+      image = "${var.client_image}:${var.client_image_tag}"
       env {
         name  = "SERVER_URI"
         value = "${google_cloud_run_v2_service.server.uri}"

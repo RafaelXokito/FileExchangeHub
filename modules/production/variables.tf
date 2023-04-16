@@ -24,14 +24,34 @@ variable "file_gateway_image" {
   description = "The Docker image for the file-gateway server."
 }
 
-variable "mongo_connection_string" {
-  type = string
-  description = "The mongo connection string"  
-}
-
 variable "client_image" {
   type        = string
   description = "The Docker image for the client."
+}
+
+variable "server_image_tag" {
+  type        = string
+  description = "The Docker image_tag for the Express server."
+}
+
+variable "socket_server_image_tag" {
+  type        = string
+  description = "The Docker image_tag for the Socket.io server."
+}
+
+variable "file_gateway_image_tag" {
+  type        = string
+  description = "The Docker image_tag for the file-gateway server."
+}
+
+variable "client_image_tag" {
+  type        = string
+  description = "The Docker image_tag for the client."
+}
+
+variable "mongo_connection_string" {
+  type = string
+  description = "The mongo connection string"  
 }
 
 variable "azure_client_id" {
