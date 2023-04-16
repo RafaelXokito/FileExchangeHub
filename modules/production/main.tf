@@ -143,10 +143,8 @@ resource "google_cloud_run_v2_service_iam_policy" "file_gateway_policy" {
   policy_data = data.google_iam_policy.public.policy_data
 }
 
-resource "google_cloud_run_v2_service_iam_policy" "bucket_policy" {
-  project  = google_storage_bucket.bucket.project
-  location = google_storage_bucket.bucket.location
-  name  = google_storage_bucket.bucket.name
+resource "google_storage_bucket_iam_policy" "bucket_policy" {
+  bucket      = google_storage_bucket.bucket.name
   policy_data = data.google_iam_policy.bucket_public.policy_data
 }
 
