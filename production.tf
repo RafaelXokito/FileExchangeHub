@@ -17,3 +17,10 @@ module "production" {
   # azure_subscription_id = "139dfd40-9d71-4ada-a60f-5f0ec09fddd1"
   # azure_tenant_id = "536b85ad-a448-4186-a9af-e3ccad3302c5"
 }
+
+terraform {
+  backend "gcs" {
+    bucket = "fileexchangehub-terraform"
+    prefix = "state"
+  }
+}

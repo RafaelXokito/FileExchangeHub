@@ -1,8 +1,4 @@
 terraform {
-  backend "gcs" {
-    bucket = "fileexchangehub-terraform"
-    prefix = "state"
-  }
   required_providers {
     google = {
       source = "hashicorp/google"
