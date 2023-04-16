@@ -76,7 +76,7 @@ jobs:
       run: terraform init -target=module.production
 
     - name: Terraform Validate
-      run: terraform validate
+      run: terraform validate -var-file=production.tfvars
 
     - name: Set variables for Terraform
       run: |
