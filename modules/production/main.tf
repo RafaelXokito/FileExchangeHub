@@ -35,6 +35,10 @@ resource "google_cloud_run_v2_service" "server" {
         name  = "DATABASE_URI"
         value = local.mongo_connection_string
       }
+      env {
+        name  = "FILE_GATEWAY_URI"
+        value = "${google_cloud_run_v2_service.file-gateway.uri}"
+      }
     }
   }
 }
