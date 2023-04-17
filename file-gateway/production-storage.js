@@ -1,6 +1,7 @@
 const { Storage } = require("@google-cloud/storage");
 const multer = require("multer");
 const stream = require('stream');
+const fs = require("fs");
 const storage = new Storage({
   projectId: "fileexchangehub",
   keyFilename: "./auth.json",
