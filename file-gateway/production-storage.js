@@ -32,15 +32,15 @@ const uploadToGCP = async (file) => {
     });
   });
 
-  // https://storage.googleapis.com
-  return `/${bucketName}/${blobName}`;
+  // https://storage.googleapis.com/${bucketName}
+  return `/${blobName}`;
 };
 
 const getFileURL = (file) => {
   return file.url;
 };
 
-// URL = /fileexchange-bucket/1681692099463-bucket.png
+// URL = /1681692099463-bucket.png
 const getFileStream = async (url) => {
   const blobName = url.split("/").pop();
   const blob = bucket.file(blobName);
