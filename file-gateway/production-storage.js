@@ -1,7 +1,6 @@
 const { Storage } = require("@google-cloud/storage");
 const multer = require("multer");
 const stream = require('stream');
-const fs = require("fs");
 const storage = new Storage({
   projectId: "fileexchangehub",
   keyFilename: "./auth.json",
@@ -31,14 +30,6 @@ const uploadToGCP = async (file) => {
     .on('finish', () => {
       resolve();
     });
-  });
-
-  fs.unlink(file.path, (err) => {
-    if (err) {
-      console.error(`Failed to delete temporary file: ${file.path}`);
-    } else {
-      console.log(`Temporary file deleted: ${file.path}`);
-    }
   });
 
   return `https://storage.googleapis.com/${bucketName}/${blobName}`;

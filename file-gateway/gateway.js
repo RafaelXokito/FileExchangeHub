@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const axios = require("axios");
+const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3003;
@@ -26,6 +27,14 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     url = "";
     if (isProduction === true) {
       url = await storage.uploadToGCP(file);
+
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error(`Failed to delete temporary file: ${file.path}`);
+        } else {
+          console.log(`Temporary file deleted: ${file.path}`);
+        }
+      });
     } else {
       url = await storage.getFileURL(file);
     }
