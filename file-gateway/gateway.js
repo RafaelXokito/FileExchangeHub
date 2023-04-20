@@ -6,7 +6,7 @@ const axios = require("axios");
 const app = express();
 const PORT = process.env.PORT || 3003;
 
-const isProduction = (process.env.IS_PRODUCTION ? process.env.IS_PRODUCTION : "FALSE") === "TRUE";
+const isProduction = (process.env.IS_PRODUCTION || "FALSE") === "TRUE";
 
 const storage = isProduction
   ? require('./production-storage')
@@ -23,12 +23,7 @@ app.listen(PORT, () => {
 app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
-    url = "";
-    if (isProduction === true) {
-      url = await storage.uploadToGCP(file);
-    } else {
-      url = await storage.getFileURL(file);
-    }
+    url = await storage.getFileURL(file);
 
     res.status(200).json({ url });
   } catch (error) {

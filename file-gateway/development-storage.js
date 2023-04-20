@@ -30,5 +30,5 @@ console.log('Development storage:', storage);
 module.exports = {
     storage: storage,
     getFileURL: getFileURL,
-    getFileStream: getFileStream,
+    getFileStream: getFileStream
 };

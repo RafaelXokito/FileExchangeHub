@@ -98,7 +98,17 @@ resource "google_storage_bucket" "bucket" {
   storage_class = "STANDARD"
 
   uniform_bucket_level_access = true
+
+  lifecycle_rule {
+    condition {
+      age = 3
+    }
+    action {
+      type = "Delete"
+    }
+  }
 }
+
 
 data "google_iam_policy" "public" {
   binding {

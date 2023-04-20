@@ -20,7 +20,7 @@ function Main() {
     
     return (
       <div className="app">
-        <h1 className="app-name">FileExchange Hub CN</h1>
+        <h1 className="app-name">FileExchange Hub</h1>
         <div className="room-input-container">
           <input
             className="room-input"

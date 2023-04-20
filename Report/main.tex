@@ -81,7 +81,11 @@
 
 \begin{abstract}
 
-In this report, we present a decentralized file exchange hub designed using a cloud-native approach that leverages containers, microservices, and cloud services. Our architecture comprises a React-based frontend served by Nginx, an Express API for managing file transfers, a real-time communication server using Socket.IO, and MongoDB as the primary database. The application stores files in Google Cloud Storage, and our deployment pipeline is streamlined using Google Cloud Build and Cloud Run. The result is a scalable, resilient, and efficient file exchange system that demonstrates the power and flexibility of modern cloud computing technologies for software applications.
+The exchange of files has been a fundamental aspect of communication and collaboration throughout the history of computing. From the early days of floppy disks and bulletin board systems to the rise of email attachments and file-sharing platforms, the need to transfer digital files has continued to evolve. In recent years, with the proliferation of cloud-based services and an increasing focus on decentralization, the landscape of file exchange has become more complex and diverse.
+
+In this context, our decentralized file exchange hub aims to revolutionize the way individuals and organizations share and manage files. By leveraging the power of cloud-native technologies and a modular, microservices-based architecture, our system simplifies the file exchange process, providing an intuitive and efficient experience for users. By combining the benefits of a Presentation Provider, an Express File Management Service, an Asynchronous Message Communication Server, and a File Gateway Service, we are able to offer a robust and scalable solution that adapts to the ever-changing demands of the digital world.
+
+With our system in place, users can easily exchange files without worrying about the underlying infrastructure, ensuring that they can focus on their core tasks and projects. As the need for secure, reliable, and efficient file-sharing solutions continues to grow, our decentralized file exchange hub stands as a testament to the potential of modern cloud computing technologies to reshape the landscape of digital collaboration.
 
 \end{abstract}
 
@@ -98,7 +102,7 @@ The rapid growth of cloud computing and microservices has revolutionized the way
 
 The application is divided into four main modules: Presentation Provider (Nginx), API (Express), Asynchronous Message Communication server, and Database (MongoDB). Each module is designed to serve a specific purpose and can scale independently to adapt to changing loads and requirements. The application also leverages Google Cloud Platform (GCP) services such as Cloud Storage Bucket for storing and managing files.
 
-The report is structured as follows: Section \ref{sec:architecture} presents the architecture of the application, detailing the purpose and design of each module. Section \ref{sec:deployment} describes the deployment process, emphasizing the use of GCP's Cloud Build and Cloud Run services to automate and streamline the deployment of the application components. Finally, the report concludes with a summary of the key findings and insights gained from the project.
+The report is structured as follows: Section \ref{sec:architecture} presents the architecture of the application, detailing the purpose and design of each module. Section \ref{sec:scenarios} discusses the two scenarios in which our application can be set up and run, namely the local and production scenarios, and outlines their respective architectures and communication patterns. Section \ref{sec:deployment} describes the deployment process, emphasizing the use of GCP's Cloud Build and Cloud Run services to automate and streamline the deployment of the application components. Section \ref{sec:discussion} provides a comprehensive discussion on the different scenarios, difficulties faced during deployments, and offers recommendations for developers working on similar projects. Finally, the report concludes with a summary of the key findings and insights gained from the project.
 
 \section{Architecture}\label{sec:architecture}
 
@@ -112,38 +116,62 @@ This project follows a microservices architecture, which allows for improved sca
     \item Cloud Storage Bucket (Azure Blob Storage): This component stores the uploaded files, providing a reliable and scalable storage solution.
 \end{enumerate}
 
-The following diagram (Figure \ref{fig:architecture}) depicts the relationships between the components:
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=9cm]{architecture.png}
-    \caption{Local system architecture diagram.}
-    \label{fig:architecture}
-\end{figure}
-
 In this architecture, each component communicates with the others through well-defined interfaces, allowing for efficient collaboration and easy maintenance. The use of containerization and cloud-native deployment further enhances the system's scalability and resilience.
 
 \subsection{Presentation Provider: Nginx-based Frontend}
 
 The presentation layer of our file exchange hub is built using a React web application. We utilize Nginx as a reverse proxy and web server to serve the static content generated by the React application. Nginx offers excellent performance, stability, and low resource usage, making it an ideal choice for our frontend. Furthermore, its ability to handle a large number of simultaneous connections ensures a responsive user experience, even during peak loads.
 
-\subsection{API: Express-based File Transfer Service}
+\subsection{API: Express-based File Management Service}
 
-Our file transfer service is implemented using Node.js with the Express framework, providing a robust and scalable API for managing file uploads and downloads. This service is responsible for handling file metadata, coordinating file transfers, and integrating with the cloud storage service for actual file storage. Express is chosen for its ease of use, extensive documentation, and compatibility with Node.js, which allows for efficient development and seamless integration with other components.
-
-\subsection{Asynchronous Message Communication Server: Socket.IO}
-
-To enable real-time communication and notifications within our file exchange hub, we employ Socket.IO, a popular library for real-time web applications. This server facilitates instant messaging between users in the same room, ensuring a seamless and interactive experience for all participants. Socket.IO is selected for its flexibility, reliability, and compatibility with various platforms and transports, making it a powerful solution for real-time communication in our application.
+Our file management service is implemented using Node.js with the Express framework, providing a robust and scalable API for managing file metadata and coordinating file transfers. This service is responsible for handling user authentication, managing file metadata, and communicating with the File Gateway service for actual file uploads and downloads. Express is chosen for its ease of use, extensive documentation, and compatibility with Node.js, which allows for efficient development and seamless integration with other components of the File Exchange Hub.
 
 \subsection{Database: MongoDB}
 
 MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. It's flexible schema and horizontal scalability makes it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data. Additionally, MongoDB provides a rich query language and high-performance indexing capabilities, allowing for efficient data retrieval and manipulation.
 
+\subsection{Asynchronous Message Communication Server: Socket.IO}
+
+To enable real-time communication and notifications within our file exchange hub, we employ Socket.IO, a popular library for real-time web applications. This server facilitates instant messaging between users in the same room, ensuring a seamless and interactive experience for all participants. Socket.IO is selected for its flexibility, reliability, and compatibility with various platforms and transports, making it a powerful solution for real-time communication in our application.
+
+\subsection{File Gateway: Node.js-based File Streaming Service}
+
+The File Gateway service is a Node.js-based application designed to efficiently stream files between clients and the cloud storage service. It acts as an intermediary, managing incoming file requests and delivering the requested files to the clients in real-time. This service ensures optimal performance and reduced latency by employing features such as caching, parallel streaming, and buffering. The File Gateway is built using Node.js for its high-performance capabilities, non-blocking I/O model, and ease of integration with other components, making it an ideal choice for this crucial aspect of the File Exchange Hub.
+
 \subsection{Cloud Storage Bucket: Azure Blob Storage}
 
 To store and manage the actual files exchanged by users, we leverage Azure Blob Storage. This fully managed object storage service offers high availability, durability, and scalability, allowing our file exchange hub to efficiently store, retrieve, and share files. The choice of Azure Blob Storage is driven by its integration with other Azure services, its security features, and its cost-effective pricing model, making it a suitable solution for our application's file storage needs.
 
-\section{Production Deployment} \label{sec:deployment}
+\section{Scenarios} \label{sec:scenarios}
+
+In this section, we will discuss the two scenarios in which our application can be set up and run: the local scenario and the production scenario. Each scenario has its own architecture and communication patterns between the different services. Understanding these scenarios helps in setting up, testing, and deploying the application effectively.
+
+\subsection{Local scenario}
+
+In the local scenario, all components are hosted and run locally on the developer's machine. The following diagram (Figure \ref{fig:architectureLocal}) depicts the relationships between the components:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8cm]{architectureLocal.jpeg}
+\caption{Local system architecture diagram.}
+\label{fig:architectureLocal}
+\end{figure}
+
+In this setup, the Presentation Provider communicates directly with the Express File Management Service, Asynchronous Message Communication Server, and File Gateway Service, which are all running on the same local machine. The Express File Management Service is responsible for user authentication and managing file metadata. The Asynchronous Message Communication Server handles real-time communication, and the File Gateway Service manages the actual file uploads and downloads by interacting with the local storage.
+
+\subsection{Production scenario}
+In the production scenario, the services are deployed on Google Cloud Run, and the storage is handled by Google Cloud Storage. The following diagram (Figure \ref{fig:architectureProd}) depicts the relationships between the components:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8cm]{architectureProd.jpeg}
+\caption{Production system architecture diagram.}
+\label{fig:architectureProd}
+\end{figure}
+
+In this setup, the Presentation Provider communicates with the Express File Management Service, Asynchronous Message Communication Server, and File Gateway Service through their respective exposed endpoints. The Express File Management Service is responsible for user authentication and managing file metadata. The Asynchronous Message Communication Server handles real-time communication, and the File Gateway Service manages the actual file uploads and downloads by interacting with the Google Cloud Storage. This architecture provides better scalability and reliability, as each service can be independently managed and scaled in response to the system's demands.
+
+\section{Provisioning} \label{sec:deployment}
 
 The deployment process is designed to ensure a smooth transition from development to production, leveraging the power of Google Cloud Platform (GCP) services. The deployment strategy uses GCP's Cloud Run service, along with GitHub Actions, Docker Hub, and Terraform, for automating and streamlining the process. Figure \ref{fig:deployment} presents a diagram of the deployment process, illustrating the steps and relationships between each involved service.
 
@@ -176,6 +204,14 @@ Using Terraform, we define the infrastructure for each microservice as code, inc
 \subsection{Cloud Run: Scalable Containerized Services}
 
 Google Cloud Run is a serverless platform that enables the deployment and management of containerized applications. By leveraging the power of containers, Cloud Run allows developers to focus on writing code without worrying about the underlying infrastructure. The platform automatically scales applications based on demand, ensuring optimal resource usage and minimizing costs.
+
+\section{Discussion} \label{sec:discussion}
+
+Throughout the development of our decentralized file exchange hub, we encountered various challenges and learned valuable lessons about deploying applications both locally and in the cloud. In this section, we will discuss the different scenarios, difficulties faced during deployments, and offer recommendations for other developers embarking on similar projects.
+
+Comparing the local and production scenarios, we noticed that while local deployment is easier to set up and manage, it lacks the scalability and reliability offered by cloud deployment. In the local scenario, all components run on the developer's machine, which simplifies communication between services but limits the system's ability to handle high loads and provide high availability. On the other hand, deploying our application to the cloud using Google Cloud Run and Google Cloud Storage enables us to achieve better scalability and reliability while maintaining a modular architecture. This approach allows each service to be independently managed, scaled, and updated, thus improving the system's overall resilience and flexibility.
+
+During the deployment process, we faced several challenges, including configuring the services to communicate effectively with each other, optimizing the containerization process, and ensuring security across all components. To overcome these challenges, we relied heavily on documentation, best practices, and online resources, which proved invaluable in guiding our development efforts. Additionally, we learned the importance of thoroughly testing each service independently and as a part of the larger system to ensure seamless integration and functionality.
 
 \section{Conclusion}
 

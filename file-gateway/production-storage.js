@@ -36,10 +36,6 @@ const uploadToGCP = async (file) => {
   return `/${blobName}`;
 };
 
-const getFileURL = (file) => {
-  return file.url;
-};
-
 // URL = /1681692099463-bucket.png
 const getFileStream = async (url) => {
   const blobName = url.split("/").pop();
@@ -50,7 +46,6 @@ const getFileStream = async (url) => {
 
 module.exports = {
   storage: memoryStorage,
-  uploadToGCP: uploadToGCP,
-  getFileURL: getFileURL,
+  getFileURL: uploadToGCP,
   getFileStream: getFileStream,
 };

@@ -3,12 +3,6 @@ variable "project_id" {
   type        = string
 }
 
-variable "external_port" {
- type = number
- description = "External port for nginx"
- default = 8080
-}
-
 variable "server_image" {
   type        = string
   description = "The Docker image for the Express server."
