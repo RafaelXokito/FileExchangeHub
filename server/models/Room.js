@@ -9,6 +9,11 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  expiresAt: {
+    type: Date,
+    default: () => new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day in the future
+    index: { expires: '1d' },
+  },
 });
 
 const roomSchema = new mongoose.Schema({

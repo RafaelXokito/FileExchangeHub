@@ -204,8 +204,12 @@ app.get("/api/rooms/:roomCode/messages", async (req, res) => {
       });
     }
 
+    const availableMessages = room.messages.filter(
+      (message) => message.expiresAt > new Date()
+    );
+
     res.status(200).json({
-      messages: room.messages,
+      messages: availableMessages,
     });
   } catch (error) {
     res.status(500).json({
