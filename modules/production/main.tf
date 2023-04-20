@@ -76,7 +76,7 @@ resource "google_cloud_run_service" "client" {
   location = "europe-west1"
 
   metadata {
-    namespace = "FileExchangeHub"
+    namespace = "app"
   }
 
   template {
@@ -106,7 +106,7 @@ resource "google_cloud_run_domain_mapping" "default" {
   name     = "filexchangehub.com"
 
   metadata {
-    namespace = "FileExchangeHub"
+    namespace = "app"
   }
 
   spec {
