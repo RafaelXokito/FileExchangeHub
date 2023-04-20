@@ -76,6 +76,10 @@ resource "google_cloud_run_v2_service" "client" {
   location = "europe-west1"
   ingress = "INGRESS_TRAFFIC_ALL"
 
+  metadata {
+    namespace = "FileExchangeHub"
+  }
+
   template {
     containers {
       image = "${var.client_image}:${var.client_image_tag}"
@@ -88,6 +92,19 @@ resource "google_cloud_run_v2_service" "client" {
         value = "${google_cloud_run_v2_service.socket_server.uri}"
       }
     }
+  }
+}
+
+resource "google_cloud_run_domain_mapping" "default" {
+  location = "europe-west1"
+  name     = "filexchangehub.com"
+
+  metadata {
+    namespace = "FileExchangeHub"
+  }
+
+  spec {
+    route_name = google_cloud_run_v2_service.client.name
   }
 }
 
