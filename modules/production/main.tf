@@ -71,27 +71,33 @@ resource "google_cloud_run_v2_service" "file-gateway" {
   }
 }
 
-resource "google_cloud_run_v2_service" "client" {
+resource "google_cloud_run_service" "client" {
   name     = "client-service"
   location = "europe-west1"
-  ingress = "INGRESS_TRAFFIC_ALL"
 
   metadata {
     namespace = "FileExchangeHub"
   }
 
   template {
-    containers {
-      image = "${var.client_image}:${var.client_image_tag}"
-      env {
-        name  = "SERVER_URI"
-        value = "${google_cloud_run_v2_service.server.uri}"
-      }
-      env {
-        name  = "SOCKET_URI"
-        value = "${google_cloud_run_v2_service.socket_server.uri}"
+    spec {
+      containers {
+        image = "${var.client_image}:${var.client_image_tag}"
+        env {
+          name  = "SERVER_URI"
+          value = "${google_cloud_run_v2_service.server.uri}"
+        }
+        env {
+          name  = "SOCKET_URI"
+          value = "${google_cloud_run_v2_service.socket_server.uri}"
+        }
       }
     }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
   }
 }
 
@@ -104,9 +110,10 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 
   spec {
-    route_name = google_cloud_run_v2_service.client.name
+    route_name = google_cloud_run_service.client.name
   }
 }
+
 
 resource "google_storage_bucket" "bucket" {
   name          = "fileexchange-bucket"
@@ -161,9 +168,9 @@ resource "google_cloud_run_v2_service_iam_policy" "socket_server_policy" {
 }
 
 resource "google_cloud_run_v2_service_iam_policy" "client_policy" {
-  project  = google_cloud_run_v2_service.client.project
-  location = google_cloud_run_v2_service.client.location
-  name  = google_cloud_run_v2_service.client.name
+  project  = google_cloud_run_service.client.project
+  location = google_cloud_run_service.client.location
+  name  = google_cloud_run_service.client.name
   policy_data = data.google_iam_policy.public.policy_data
 }
 
