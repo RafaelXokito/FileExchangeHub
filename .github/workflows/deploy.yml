@@ -94,3 +94,8 @@ jobs:
 
     - name: Terraform Apply
       run: terraform apply -auto-approve -target=module.production -var-file=production.tfvars
+
+    - name: Print domain_mapping_status output
+      run: |
+        echo "Domain Mapping Status:"
+        terraform output domain_mapping_status
