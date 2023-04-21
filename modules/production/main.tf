@@ -74,10 +74,9 @@ resource "google_cloud_run_v2_service" "file-gateway" {
 resource "google_cloud_run_service" "client" {
   name     = "client-service"
   location = "europe-west1"
-  # ingress = "INGRESS_TRAFFIC_ALL"
 
   metadata {
-    namespace = "fileexchangehub"
+    namespace = "FileExchangeHub"
   }
 
   template {
@@ -95,6 +94,11 @@ resource "google_cloud_run_service" "client" {
       }
     }
   }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
 }
 
 resource "google_cloud_run_domain_mapping" "default" {
@@ -102,17 +106,12 @@ resource "google_cloud_run_domain_mapping" "default" {
   name     = "filexchangehub.com"
 
   metadata {
-    namespace = "fileexchangehub"
+    namespace = "FileExchangeHub"
   }
 
   spec {
     route_name = google_cloud_run_service.client.name
   }
-
-  depends_on = [
-    google_cloud_run_service.client
-  ]
-
 }
 
 resource "google_storage_bucket" "bucket" {
