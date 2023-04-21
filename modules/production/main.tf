@@ -75,10 +75,6 @@ resource "google_cloud_run_service" "client" {
   name     = "client-service"
   location = "europe-west1"
 
-  metadata {
-    namespace = "FileExchangeHub"
-  }
-
   template {
     spec {
       containers {
@@ -113,6 +109,25 @@ resource "google_cloud_run_domain_mapping" "default" {
     route_name = google_cloud_run_service.client.name
   }
 }
+
+output "domain_mapping_status" {
+  value = google_cloud_run_domain_mapping.default.status
+}
+
+resource "google_dns_managed_zone" "example" {
+  name        = "filexchangehub-com"
+  dns_name    = "filexchangehub.com."
+  description = "Managed DNS zone for filexchangehub.com"
+}
+
+resource "google_dns_record_set" "example_a" {
+  managed_zone = google_dns_managed_zone.example.name
+  name         = "filexchangehub.com."
+  type         = "A"
+  ttl          = 300
+  rrdatas      = [lookup(google_cloud_run_domain_mapping.default.status[0].resource_records[0], "rrdata")]
+}
+
 
 resource "google_storage_bucket" "bucket" {
   name          = "fileexchange-bucket"
