@@ -96,7 +96,7 @@ resource "google_cloud_run_domain_mapping" "default" {
   name     = "filexchangehub.com"
 
   metadata {
-    namespace = "FileExchangeHub"
+    namespace = "fileexchangehub"
   }
 
   spec {
