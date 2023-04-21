@@ -102,7 +102,7 @@ resource "google_cloud_run_service" "client" {
 }
 
 resource "google_cloud_run_domain_mapping" "default" {
-  location = "us-central1"
+  location = "europe-west1"
   name     = "filexchangehub.com"
 
   metadata {
