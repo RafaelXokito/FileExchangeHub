@@ -97,7 +97,7 @@ resource "google_cloud_run_service" "client" {
   }
 }
 
-resource "google_cloud_run_domain_mapping" "default" {
+resource "google_cloud_run_domain_mapping" "dnsmap" {
   location = "europe-west1"
   name     = "filexchangehub.com"
 
@@ -110,24 +110,33 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 }
 
-output "domain_mapping_status" {
-  value = google_cloud_run_domain_mapping.default.status
-}
-
-resource "google_dns_managed_zone" "example" {
+resource "google_dns_managed_zone" "zone" {
   name        = "filexchangehub-com"
   dns_name    = "filexchangehub.com."
   description = "Managed DNS zone for filexchangehub.com"
 }
 
 resource "google_dns_record_set" "example_a" {
-  managed_zone = google_dns_managed_zone.example.name
+  managed_zone = google_dns_managed_zone.zone.name
   name         = "filexchangehub.com."
   type         = "A"
   ttl          = 300
-  rrdatas      = [lookup(google_cloud_run_domain_mapping.default.status[0].resource_records[0], "rrdata")]
+  rrdatas      = [
+    for rr in google_cloud_run_domain_mapping.dnsmap.status[0].resource_records :
+    rr.rrdata if rr.type == "A"
+  ]
 }
 
+resource "google_dns_record_set" "example_aaaa" {
+  managed_zone = google_dns_managed_zone.zone.name
+  name         = "filexchangehub.com."
+  type         = "AAAA"
+  ttl          = 300
+  rrdatas      = [
+    for rr in google_cloud_run_domain_mapping.dnsmap.status[0].resource_records :
+    rr.rrdata if rr.type == "AAAA"
+  ]
+}
 
 resource "google_storage_bucket" "bucket" {
   name          = "fileexchange-bucket"
@@ -199,55 +208,3 @@ resource "google_storage_bucket_iam_policy" "bucket_policy" {
   bucket      = google_storage_bucket.bucket.name
   policy_data = data.google_iam_policy.bucket_public.policy_data
 }
-
-
-# AZURE PROVIDER
-
-# provider "azurerm" {
-#   client_id       = var.azure_client_id
-#   client_secret   = var.azure_client_secret
-#   subscription_id = var.azure_subscription_id
-#   tenant_id       = var.azure_tenant_id
-#   features {
-    
-#   }
-# }
-
-# resource "azurerm_resource_group" "fileexchangeazure" {
-#   name     = "file-exchange-azure"
-#   location = "West Europe"
-# }
-
-# resource "azurerm_storage_account" "fileexchangeazure" {
-#   name                     = "file-exchange-azure"
-#   resource_group_name      = azurerm_resource_group.fileexchangeazure.name
-#   location                 = azurerm_resource_group.fileexchangeazure.location
-#   account_tier             = "Standard"
-#   account_replication_type = "LRS"
-#   public_network_access_enabled = true
-#   account_kind = "BlobStorage"
-# }
-
-# resource "azurerm_storage_container" "fileexchangeazure" {
-#   name                  = "content"
-#   storage_account_name  = azurerm_storage_account.fileexchangeazure.name
-#   container_access_type = "private"
-# }
-
-# resource "azurerm_storage_blob" "fileexchangeazure" {
-#   name                   = "file-exchange-azure.zip"
-#   storage_account_name   = azurerm_storage_account.fileexchangeazure.name
-#   storage_container_name = azurerm_storage_container.fileexchangeazure.name
-#   type                   = "Block"
-#   source                 = "some-local-file.zip"
-# }
-
-
-# provider "azurerm" {
-#   client_id       = var.azure_client_id
-#   client_secret   = var.azure_client_secret
-#   subscription_id = "139dfd40-9d71-4ada-a60f-5f0ec09fddd1"
-#   tenant_id       = var.azure_tenant_id
-
-#   features {}
-# }
