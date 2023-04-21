@@ -106,7 +106,7 @@ resource "google_cloud_run_domain_mapping" "default" {
   }
 
   spec {
-    route_name = google_cloud_run_service.client.name
+    route_name = google_cloud_run_service.client.uri
   }
 
 }
