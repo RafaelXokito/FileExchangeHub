@@ -102,6 +102,10 @@ resource "google_cloud_run_domain_mapping" "default" {
   spec {
     route_name = google_cloud_run_v2_service.client.name
   }
+
+  depends_on = [
+    google_cloud_run_v2_service.client
+  ]
 }
 
 resource "google_storage_bucket" "bucket" {
