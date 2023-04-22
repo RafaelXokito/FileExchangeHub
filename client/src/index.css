@@ -27,6 +27,14 @@ code {
   margin-bottom: 2rem;
 }
 
+.app-logo {
+  width: 150px; /* Adjust the width as needed */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  padding-bottom: 20px; /* Add some spacing below the logo */
+}
+
 .room-input-container {
   display: flex;
   justify-content: center;
@@ -62,4 +70,35 @@ code {
   border-radius: 4px;
   cursor: pointer;
   margin-left: 15px;
+}
+
+/* Styles for screens smaller than 600px (e.g. smartphones) */
+@media screen and (max-width: 600px) {
+  .app {
+    padding: 10px;
+  }
+
+  .app-logo {
+    width: 100%;
+    height: auto;
+  }
+
+  .app-name {
+    font-size: 2rem;
+  }
+
+  .room-input-container {
+    flex-direction: column;
+  }
+
+  .room-input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .join-room-btn,
+  .create-room-btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
