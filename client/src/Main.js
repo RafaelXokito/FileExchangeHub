@@ -25,7 +25,7 @@ function Main() {
         alt="FileExchange Hub Logo"
         className="app-logo"
       />
-      <h1 className="app-name">FileExchange Hub</h1>
+      <h1 className="app-name">File Exchange Hub</h1>
       <div className="room-input-container">
         <input
           className="room-input"
@@ -40,6 +40,13 @@ function Main() {
           Create Room
         </button>
       </div>
+      <footer>
+        <p>
+          <a href="https://www.flaticon.com/free-icons/folder" title="Folder icons created by Freepik - Flaticon">
+            Folder icons created by Freepik - Flaticon
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

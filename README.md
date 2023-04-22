@@ -3,8 +3,8 @@
 A powerful and user-friendly platform for exchanging files across different services with seamless integration. This project includes an Express server, a Socket.IO server, a file gateway, and a client, creating an efficient and secure way for users to transfer files between various services.
 
 <p align="center">
-  <img src="path/to/image1.png" alt="Image 1" width="45%" />
-  <img src="path/to/image2.png" alt="Image 2" width="45%" />
+  <img src="https://filexchangehub.com/home.png" alt="Image 1" width="45%" />
+  <img src="https://filexchangehub.com/room.png" alt="Image 2" width="45%" />
 </p>
 
 ## Table of Contents
