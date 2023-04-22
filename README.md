@@ -10,7 +10,6 @@ A platform for exchanging files across different services, including an Express 
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
   - [Usage](#usage)
-  - [Testing](#testing)
   - [Deployment](#deployment)
 
 ## Getting Started
@@ -43,7 +42,13 @@ cd ../file-gateway && npm install
 cd ..
 ```
 
-3. Create a `.env` file in the `server`, `socket-server`, and `file-gateway` directories with the required environment variables.
+3. Create the uploads directory in the `server`, and `file-gateway` service directories.
+
+```
+cd server && mkdir uploads
+cd ../file-gateway && mkdir uploads
+cd ..
+```
 
 ## Usage
 
@@ -57,21 +62,7 @@ cd ../file-gateway && npm start
 cd ..
 ```
 
-
 2. Access the client at `http://localhost:3000`.
-
-## Testing
-
-To run the test suite for each service:
-
-```
-cd client && npm test
-cd ../server && npm test
-cd ../socket-server && npm test
-cd ../file-gateway && npm test
-cd ..
-```
-
 
 ## Deployment
 

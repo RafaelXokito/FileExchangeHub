@@ -4,10 +4,6 @@ terraform {
       source = "hashicorp/google"
       version = "4.58.0"
     }
-    # azurerm = {
-    #   source = "hashicorp/azurerm"
-    #   version = "3.52.0"
-    # }
   }
 }
 
