@@ -22,6 +22,10 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
+    - name: Set up Google Cloud credentials for file-gateway
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
+
     - name: Build and push the client image
       uses: docker/build-push-action@v2
       with:
@@ -65,7 +69,6 @@ jobs:
     - name: Set up Google Cloud credentials
       run: |
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
-        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
 
     - name: Setup Terraform
