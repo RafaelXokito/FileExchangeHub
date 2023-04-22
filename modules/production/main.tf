@@ -26,7 +26,7 @@ resource "google_cloud_run_v2_service" "server" {
 
   template {
     containers {
-      image = "${var.server_image}:${var.server_image_tag}"
+      image = "${var.server_image}"
       env {
         name  = "DATABASE_URI"
         value = local.mongo_connection_string
@@ -46,7 +46,7 @@ resource "google_cloud_run_v2_service" "socket_server" {
   
   template {
     containers {
-      image = "${var.socket_server_image}:${var.socket_server_image_tag}"
+      image = "${var.socket_server_image}"
     }
   }
 }
@@ -58,7 +58,7 @@ resource "google_cloud_run_v2_service" "file-gateway" {
   
   template {
     containers {
-      image = "${var.file_gateway_image}:${var.file_gateway_image_tag}"
+      image = "${var.file_gateway_image}"
       env {
         name  = "IS_PRODUCTION"
         value = "TRUE"
@@ -74,7 +74,7 @@ resource "google_cloud_run_service" "client" {
   template {
     spec {
       containers {
-        image = "${var.client_image}:${var.client_image_tag}"
+        image = "${var.client_image}"
         env {
           name  = "SERVER_URI"
           value = "${google_cloud_run_v2_service.server.uri}"
@@ -92,6 +92,8 @@ resource "google_cloud_run_service" "client" {
     latest_revision = true
   }
 }
+
+# Cloud DNS & Domain Setting
 
 resource "google_cloud_run_domain_mapping" "dnsmap" {
   location = "europe-west1"
@@ -152,6 +154,7 @@ resource "google_storage_bucket" "bucket" {
   }
 }
 
+# GCP Policies
 
 data "google_iam_policy" "public" {
   binding {

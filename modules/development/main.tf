@@ -36,7 +36,7 @@ resource "docker_image" "file_gateway_server" {
 }
 
 resource "docker_network" "app_network" {
-  name = "app_network"
+  name = "filexchangehub_dev"
 }
 
 resource "docker_container" "client" {

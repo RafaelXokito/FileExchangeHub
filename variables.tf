@@ -13,18 +13,6 @@ variable "socket_server_image" {
 variable "file_gateway_image" {
   default = ""
 }
-variable "client_image_tag" {
-  default = "latest"
-}
-variable "server_image_tag" {
-  default = "latest"
-}
-variable "socket_server_image_tag" {
-  default = "latest"
-}
-variable "file_gateway_image_tag" {
-  default = "latest"
-}
 variable "mongo_connection_string" {
   default = ""
 }
