@@ -62,7 +62,7 @@ cd ../file-gateway && npm start
 cd ..
 ```
 
-2. Access the client at `http://localhost:3000`.
+2. Access the client at `http://localhost:8080`.
 
 ## Deployment
 
