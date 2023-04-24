@@ -96,6 +96,7 @@ jobs:
         echo "mongo_public_key = \"${{ secrets.MONGO_PUBLIC_KEY }}\"" >> production.auto.tfvars        
         echo "mongo_private_key = \"${{ secrets.MONGO_PRIVATE_KEY }}\"" >> production.auto.tfvars
         echo "mongo_dbuser_password = \"${{ secrets.MONGO_DBUSER_PASSWORD }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser = \"${{ secrets.MONGO_DBUSER }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: terraform plan -target=module.production -var-file=production.auto.tfvars

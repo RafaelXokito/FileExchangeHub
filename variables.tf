@@ -31,43 +31,13 @@ variable "mongo_org_id" {
   description = "MongoDB Organization ID"
   default     = ""
 }
-variable "mongo_project_name" {
-  type        = string
-  description = "The MongoDB Atlas Project Name"
-  default     = ""
-}
-variable "mongo_cluster_name" {
-  type        = string
-  description = "The MongoDB Atlas Cluster Name"
-  default     = ""
-}
-variable "mongo_cloud_provider" {
-  type        = string
-  description = "The cloud provider to use, must be AWS, GCP or AZURE"
-  default     = ""
-}
-variable "mongo_region" {
-  type        = string
-  description = "MongoDB Atlas Cluster Region, must be a region for the provider given"
-  default     = ""
-}
-variable "mongo_dbuser" {
-  type        = string
-  description = "MongoDB Atlas Database User Name"
-  default     = ""
-}
 variable "mongo_dbuser_password" {
   type        = string
   description = "MongoDB Atlas Database User Password"
   default     = ""
 }
-variable "mongo_database_name" {
+variable "mongo_dbuser" {
   type        = string
-  description = "The database in the cluster to limit the database user to, the database does not have to exist yet"
-  default     = ""
-}
-variable "mongo_cidr" {
-  type        = string
-  description = "The IP address that the cluster will be accessed from, can also be a CIDR range or AWS security group"
+  description = "MongoDB Atlas Database User"
   default     = ""
 }
