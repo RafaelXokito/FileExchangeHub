@@ -28,6 +28,7 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
   project_id             = mongodbatlas_project.project.id
   name                   = "Cluster1"
   cluster_type           = "REPLICASET"
+  mongo_db_major_version = "4.2"
   replication_specs {
     region_configs {
         provider_name                = "TENANT"
