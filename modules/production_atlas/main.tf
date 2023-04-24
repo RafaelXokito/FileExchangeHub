@@ -30,10 +30,10 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
   cluster_type           = "REPLICASET"
   replication_specs {
     region_configs {
-        provider_name                = "AWS"
+        provider_name                = "TENANT"
         backing_provider_name     =  "AWS"
         electable_specs {
-            instance_size = "M10"
+            instance_size = "M0"
         }
         region_name     = "EU_WEST_1"
         priority        = 1
