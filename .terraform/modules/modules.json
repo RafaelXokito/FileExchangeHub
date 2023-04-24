@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"development","Source":"./modules/development","Dir":"modules/development"},{"Key":"production","Source":"./modules/production","Dir":"modules/production"}]}
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"development","Source":"./modules/development","Dir":"modules/development"},{"Key":"production","Source":"./modules/production","Dir":"modules/production"},{"Key":"production_atlas","Source":"./modules/production_atlas","Dir":"modules/production_atlas"}]}

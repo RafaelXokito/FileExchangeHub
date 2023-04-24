@@ -88,14 +88,20 @@ jobs:
     - name: Set variables for Terraform
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
-        echo "mongo_connection_string = \"${{ secrets.MONGO_CONNECTION_STRING }}\"" >> production.auto.tfvars
         echo "socket_server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:${{ github.sha }}\"" >> production.auto.tfvars
         echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:${{ github.sha }}\"" >> production.auto.tfvars
         echo "client_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubclient:${{ github.sha }}\"" >> production.auto.tfvars
         echo "server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:${{ github.sha }}\"" >> production.auto.tfvars
+        echo "mongo_org_id = \"${{ secrets.MONGO_ORG_ID }}\"" >> production.auto.tfvars
+        echo "mongo_public_key = \"${{ secrets.MONGO_PUBLIC_KEY }}\"" >> production.auto.tfvars        
+        echo "mongo_private_key = \"${{ secrets.MONGO_PRIVATE_KEY }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser_password = \"${{ secrets.MONGO_DBUSER_PASSWORD }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: terraform plan -target=module.production -var-file=production.auto.tfvars
 
-    - name: Terraform Apply
+    - name: Terraform Apply MongoDB
+      run: terraform apply -auto-approve -target=module.production_atlas -var-file=production.auto.tfvars
+
+    - name: Terraform Apply Services
       run: terraform apply -auto-approve -target=module.production -var-file=production.auto.tfvars
