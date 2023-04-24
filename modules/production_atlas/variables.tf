@@ -18,5 +18,3 @@ variable "dbuser" {
   type        = string
   description = "MongoDB Atlas Database User"
 }
-
-

@@ -33,7 +33,7 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
         provider_name                = "TENANT"
         backing_provider_name     =  "AWS"
         electable_specs {
-            instance_size = "M0"
+            instance_size = "M10"
         }
         region_name     = "EU_WEST_1"
         priority        = 1
