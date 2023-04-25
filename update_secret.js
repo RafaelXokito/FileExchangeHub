@@ -1,51 +1,40 @@
-const { Octokit } = require("@octokit/core");
-const sodium = require("libsodium-wrappers");
+const { Octokit } = require('@octokit/core');
+const sodium = require('libsodium-wrappers');
 
-async function updateSecret(owner, repo, secretName, secretValue, token) {
-  const octokit = new Octokit({ auth: token });
-
-  const publicKeyResponse = await octokit.request(
-    "GET /repos/{owner}/{repo}/actions/secrets/public-key",
-    { owner, repo }
-  );
-
-  await sodium.ready;
-
-  const publicKey = publicKeyResponse.data.key;
-  const keyId = publicKeyResponse.data.key_id;
-
-  const binKey = sodium.from_base64(publicKey, sodium.base64_variants.ORIGINAL);
-  const binSecret = sodium.from_string(secretValue);
-
-  const encryptedBytes = sodium.crypto_box_seal(binSecret, binKey);
-  const encryptedValue = sodium.to_base64(encryptedBytes, sodium.base64_variants.ORIGINAL);
-
-  await octokit.request(
-    "PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}",
-    {
-      owner,
-      repo,
-      secret_name: secretName,
-      encrypted_value: encryptedValue,
-      key_id: keyId,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    }
-  );
+if (process.argv.length < 4) {
+  console.error('Usage: node update_secret.js <secret_name> <secret_value>');
+  process.exit(1);
 }
 
-(async () => {
-  if (process.argv.length < 5) {
-    console.error("Usage: node update_secret.js <secret_name> <secret_value>");
-    process.exit(1);
-  }
+const secretName = process.argv[2];
+const secretValue = process.argv[3];
 
-  const secretName = process.argv[2];
-  const secretValue = process.argv[3];
+(async () => {
+  await sodium.ready;
+
+  const token = process.env.GITHUB_TOKEN;
   const owner = process.env.GITHUB_REPOSITORY_OWNER;
   const repo = process.env.GITHUB_REPOSITORY_NAME;
-  const token = process.env.GITHUB_TOKEN;
 
-  await updateSecret(owner, repo, secretName, secretValue, token);
+  const octokit = new Octokit({ auth: token });
+
+  // Fetch public key for the repository
+  const { data: publicKey } = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
+    owner,
+    repo,
+  });
+
+  // Encrypt the secret using the public key
+  const encryptedValue = sodium.crypto_box_seal_easy(secretValue, sodium.from_base64(publicKey.key, sodium.base64_variants.ORIGINAL), 'base64', sodium.base64_variants.ORIGINAL);
+
+  // Update or create the secret in the GitHub repository
+  await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
+    owner,
+    repo,
+    secret_name: secretName,
+    encrypted_value: encryptedValue,
+    key_id: publicKey.key_id,
+  });
+
+  console.log(`Secret "${secretName}" has been updated.`);
 })();
