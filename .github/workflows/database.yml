@@ -45,6 +45,9 @@ jobs:
 
     - name: Export Terraform Outputs
       run: terraform output -json > outputs.json
+
+    - name: Print outputs.json
+      run: cat outputs.json
       
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
