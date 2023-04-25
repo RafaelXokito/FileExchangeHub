@@ -28,6 +28,18 @@ variable "client_image" {
   default = ""
 }
 
+variable "mongo_dbuser_password" {
+  type        = string
+  description = "MongoDB Atlas Database User Password"
+  default     = ""
+}
+
+variable "mongo_dbuser" {
+  type        = string
+  description = "MongoDB Atlas Database User"
+  default     = ""
+}
+
 variable "mongo_connection_string" {
   type = string
   description = "The mongo connection string"  

@@ -16,7 +16,9 @@ provider "google" {
 }
 
 locals {
-  mongo_connection_string = var.mongo_connection_string
+  dbuser_and_password = "${var.mongo_dbuser}:${var.mongo_dbuser_password}"
+  parts = split("://", var.mongo_connection_string)
+  mongo_connection_string = "${local.parts[0]}://${local.dbuser_and_password}@${local.parts[1]}/test"
 }
 
 resource "google_cloud_run_v2_service" "server" {

@@ -16,8 +16,11 @@ module "production" {
     server_image            = var.server_image
     socket_server_image     = var.socket_server_image
     file_gateway_image      = var.file_gateway_image
+
+    mongo_dbuser            = var.mongo_dbuser
+    mongo_dbuser_password   = var.mongo_dbuser_password
     
-    mongo_connection_string = format("%s/test",replace(module.production_atlas.connection_strings, "//", format("//%s:%s@", var.mongo_dbuser, var.mongo_dbuser_password)))
+    mongo_connection_string = module.production_atlas.connection_strings
 }
 
 module "development" {
