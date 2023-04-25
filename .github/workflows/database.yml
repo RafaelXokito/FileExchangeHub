@@ -43,12 +43,9 @@ jobs:
     - name: Terraform Apply MongoDB
       run: terraform apply -auto-approve -target=module.production_db -var-file=production.auto.tfvars
 
-    - name: Export Terraform Outputs
-      run: terraform output -json > outputs.json
-
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(python -c "import json; print(json.load(open('outputs.json'))['connection_strings']['value'])")
+        MONGO_CONNECTION_STRING=$(terraform output connection_strings)
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING"
       
     - name: Install jq
