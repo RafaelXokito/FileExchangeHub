@@ -81,6 +81,11 @@ jobs:
         npm init -y
         npm install @octokit/core libsodium-wrappers
 
+    - name: Set up secret file
+      run: |
+        echo "$MONGO_CONNECTION_STRING"
+
+
     - name: Store Database connection string as GitHub Secret
       if: ${{ success() }}
       env:
