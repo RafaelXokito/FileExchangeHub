@@ -54,7 +54,7 @@ jobs:
     - name: Store Database connection string as GitHub Secret
       if: ${{ success() }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
       run: |
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" # Just for debugging purposes, remove this line if you don't want to see it in the logs
         ENCRYPTED_VALUE=$(echo -n "$MONGO_CONNECTION_STRING" | gpg --symmetric --armor --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | awk '{printf "%s\\n", $0}')
