@@ -76,11 +76,7 @@ jobs:
       env:
         MONGO_CONNECTION_STRING: ${{ secrets.SERVER_URI }}
       run: |
-        import os
-        print("SECRET:")
-        for q in (os.getenv("SERVER_URI")):
-          print(q)
-      shell: python
+        echo "My secret variable: ${{ secrets.SERVER_URI }}"
         
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
