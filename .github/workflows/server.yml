@@ -119,7 +119,7 @@ jobs:
           sleep $RETRY_DELAY
         done
 
-    - name: Extract Mongo Connection String
+    - name: Extract Server URI
       run: |
         SERVER_URI=$(terraform output server_uri)
         echo "SERVER_URI=$SERVER_URI"

@@ -45,9 +45,6 @@ jobs:
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
 
-    - name: Install retry
-      run: sudo apt-get update && sudo apt-get install -y moreutils
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -94,7 +91,7 @@ jobs:
           sleep $RETRY_DELAY
         done
 
-    - name: Extract Mongo Connection String
+    - name: Extract Socket Server URI
       run: |
         SOCKET_SERVER_URI=$(terraform output socket_server_uri)
         echo "SOCKET_SERVER_URI=$SOCKET_SERVER_URI"

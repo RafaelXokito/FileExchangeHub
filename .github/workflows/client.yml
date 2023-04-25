@@ -48,9 +48,6 @@ jobs:
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
 
-    - name: Install retry
-      run: sudo apt-get update && sudo apt-get install -y moreutils
-
     - name: Wait for required GitHub Secrets
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
@@ -122,6 +119,7 @@ jobs:
           echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
           sleep $RETRY_DELAY
         done
+        
   handle_failure:
     runs-on: ubuntu-latest
     needs: [docker-build-push, deploy]

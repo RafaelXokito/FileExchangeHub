@@ -48,29 +48,6 @@ jobs:
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
 
-    - name: Wait for required GitHub Secrets
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        attempts=0
-        while true; do
-          
-
-          if [[ "$mongo_connection_string" == "MONGO_CONNECTION_STRING" ]]; then
-            echo "Required secrets found. Proceeding with the deployment."
-            break
-          fi
-
-          attempts=$((attempts + 1))
-          if [[ $attempts -ge 3 ]]; then
-            echo "Failed to find required secrets after $attempts attempts. Failing the workflow."
-            exit 1
-          fi
-
-          echo "Required secrets not found. Waiting for 5 minutes before trying again."
-          sleep 300
-        done
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -117,7 +94,7 @@ jobs:
           sleep $RETRY_DELAY
         done
 
-    - name: Extract Mongo Connection String
+    - name: Extract Gateway URI
       run: |
         SERVER_URI=$(terraform output gateway_uri)
         echo "SERVER_URI=$SERVER_URI"
