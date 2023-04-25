@@ -98,12 +98,14 @@ jobs:
         with:
           script: |
             const issueTitle = "Deployment Socket Server Workflow Failed";
+            let errorMessage = '';
+            if (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') {
+              errorMessage = github.event.workflow_run.head_commit.message;
+            }
             const issueBody = `Workflow **${process.env.GITHUB_WORKFLOW}** failed on the branch **${process.env.GITHUB_REF}**. The error message is as follows:
-
             \`\`\`
-            ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' ? github.event.workflow_run.head_commit.message : '' }}
+            ${errorMessage}
             \`\`\`
-
             Please fix the issue.`;
             
             const newIssue = await github.rest.issues.create({
