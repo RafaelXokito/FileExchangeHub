@@ -49,6 +49,7 @@ jobs:
     - name: Extract Mongo Connection String
       run: |
         MONGO_CONNECTION_STRING=$(python -c "import json; print(json.load(open('outputs.json'))['connection_strings']['value'])")
+        echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING"
       
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
@@ -58,7 +59,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        MONGO_CONNECTION_STRING=$(jq -r '.connection_strings.value' outputs.json)
+        MONGO_CONNECTION_STRING=$(python -c "import json; print(json.load(open('outputs.json'))['connection_strings']['value'])")
         curl -X PUT \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github+json" \
