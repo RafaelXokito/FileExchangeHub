@@ -69,7 +69,7 @@ jobs:
 
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings)
+        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings | tr -d '\n')
         if [ -z "$MONGO_CONNECTION_STRING" ]; then
           echo "Error: MONGO_CONNECTION_STRING is empty"
           exit 1
