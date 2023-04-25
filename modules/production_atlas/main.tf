@@ -13,7 +13,7 @@ provider "mongodbatlas" {
 }
 
 resource "mongodbatlas_project" "project" {
-  name   = "filexchangehub"
+  name   = "fileexchangehub"
   org_id = var.org_id
 }
 
