@@ -69,7 +69,7 @@ jobs:
 
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings | grep -o 'mongodb+srv://[^[:space:]]*')
+        MONGO_CONNECTION_STRING=$(terraform output connection_strings | grep -o 'mongodb+srv://[^[:space:]]*')
         echo "MONGO_CONNECTION_STRING=\"$MONGO_CONNECTION_STRING\"" >> $GITHUB_ENV
 
     - name: Install Node.js dependencies
