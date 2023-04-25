@@ -72,25 +72,6 @@ jobs:
     needs: [deploy]
     if: ${{ failure() }}
     steps:
-      - name: Create issue on failure
-        uses: actions/github-script@v6
+      - uses: jayqi/failed-build-issue-action@v1
         with:
-          token: ${{ secrets.GH_ISSUE_CREATOR_TOKEN }}
-          script: |
-            const issueTitle = "Deployment Database Workflow Failed";
-            let errorMessage = '';
-            if (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') {
-              errorMessage = github.event.workflow_run.head_commit.message;
-            }
-            const issueBody = `Workflow **${process.env.GITHUB_WORKFLOW}** failed on the branch **${process.env.GITHUB_REF}**. The error message is as follows:
-            \`\`\`
-            ${errorMessage}
-            \`\`\`
-            Please fix the issue.`;
-            
-            const newIssue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: issueTitle,
-              body: issueBody
-            });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
