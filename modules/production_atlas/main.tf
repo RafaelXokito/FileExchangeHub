@@ -34,6 +34,7 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
         backing_provider_name     =  "AWS"
         electable_specs {
             instance_size = "M10"
+            node_count    = 3
         }
         region_name     = "EU_WEST_1"
         priority        = 1
