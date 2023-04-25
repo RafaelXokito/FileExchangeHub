@@ -94,7 +94,7 @@ jobs:
     - name: Terraform Apply Services
       run: terraform apply -auto-approve -target=module.production_server -var-file=production.auto.tfvars
 
-     - name: Export Terraform Outputs
+    - name: Export Terraform Outputs
       run: terraform output -json > outputs.json
 
     - name: Store Server URI as GitHub Secret
