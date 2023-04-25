@@ -69,17 +69,19 @@ jobs:
 
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(terraform output connection_strings | grep -o 'mongodb+srv://[^[:space:]]*')
-        echo "MONGO_CONNECTION_STRING=\"$MONGO_CONNECTION_STRING\"" >> $GITHUB_ENV
+        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings | grep -o 'mongodb+srv://[^[:space:]]*')
+        MONGO_CONNECTION_STRING_BASE64=$(echo -n "$MONGO_CONNECTION_STRING" | base64)
+        echo "MONGO_CONNECTION_STRING_BASE64=\"$MONGO_CONNECTION_STRING_BASE64\"" >> $GITHUB_ENV
+    
+    - name: Set up secret file
+      run: |
+        MONGO_CONNECTION_STRING=$(echo "$MONGO_CONNECTION_STRING_BASE64" | base64 --decode)
+        echo "My secret variable: $MONGO_CONNECTION_STRING"
 
     - name: Install Node.js dependencies
       run: |
         npm init -y
         npm install @octokit/core libsodium-wrappers
-
-    - name: Set up secret file
-      run: |
-        echo "$MONGO_CONNECTION_STRING"
 
 
     - name: Store Database connection string as GitHub Secret
