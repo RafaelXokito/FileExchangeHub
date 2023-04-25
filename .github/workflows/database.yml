@@ -69,8 +69,12 @@ jobs:
 
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(terraform output connection_strings)
-        echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING"
+        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings)
+        if [ -z "$MONGO_CONNECTION_STRING" ]; then
+          echo "Error: MONGO_CONNECTION_STRING is empty"
+          exit 1
+        fi
+        echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" >> $GITHUB_ENV
           
     - name: Install Node.js dependencies
       run: |
