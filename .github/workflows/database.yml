@@ -57,7 +57,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
       run: |
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" # Just for debugging purposes, remove this line if you don't want to see it in the logs
-        ENCRYPTED_VALUE=$(echo -n "$MONGO_CONNECTION_STRING" | gpg --symmetric --armor --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | awk '{printf "%s\\n", $0}')
+        ENCRYPTED_VALUE=$(echo -n "$MONGO_CONNECTION_STRING" | gpg --symmetric --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | base64 -w0)
         KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
         
         curl -L \
