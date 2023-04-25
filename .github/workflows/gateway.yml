@@ -48,6 +48,9 @@ jobs:
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
 
+    - name: Install retry
+      run: sudo apt-get update && sudo apt-get install -y moreutils
+
     - name: Wait for required GitHub Secrets
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -88,13 +91,15 @@ jobs:
         echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest\"" >> production.auto.tfvars
 
     - name: Terraform Plan
-      run: terraform plan -target=module.production_gateway -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform plan -target=module.production_gateway -var-file=production.auto.tfvars
 
     - name: Terraform Apply Services
-      run: terraform apply -auto-approve -target=module.production_gateway -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform apply -auto-approve -target=module.production_gateway -var-file=production.auto.tfvars
 
-    - name: Export Terraform Outputs
-      run: terraform output -json > outputs.json
+    - name: Extract Mongo Connection String
+      run: |
+        SERVER_URI=$(terraform output gateway_uri)
+        echo "SERVER_URI=$SERVER_URI"
           
     - name: Store Gateway as GitHub Secret
       if: ${{ success() }}

@@ -45,6 +45,9 @@ jobs:
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
 
+    - name: Install retry
+      run: sudo apt-get update && sudo apt-get install -y moreutils
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -62,13 +65,10 @@ jobs:
         echo "socket_server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:latest\"" >> production.auto.tfvars
 
     - name: Terraform Plan
-      run: terraform plan -target=module.production_socket_server -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform plan -target=module.production_socket_server -var-file=production.auto.tfvars
 
     - name: Terraform Apply Services
-      run: terraform apply -auto-approve -target=module.production_socket_server -var-file=production.auto.tfvars
-
-    - name: Terraform Apply Services
-      run: terraform apply -auto-approve -target=module.production_socket_server -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform apply -auto-approve -target=module.production_socket_server -var-file=production.auto.tfvars
 
     - name: Extract Mongo Connection String
       run: |

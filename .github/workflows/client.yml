@@ -48,6 +48,9 @@ jobs:
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
 
+    - name: Install retry
+      run: sudo apt-get update && sudo apt-get install -y moreutils
+
     - name: Wait for required GitHub Secrets
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
@@ -91,10 +94,10 @@ jobs:
         echo "socket_server_uri = \"${{ secrets.SOCKET_SERVER_URI }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
-      run: terraform plan -target=module.production_client -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform plan -target=module.production_client -var-file=production.auto.tfvars
 
     - name: Terraform Apply Services
-      run: terraform apply -auto-approve -target=module.production_client -var-file=production.auto.tfvars
+      run: retry -t 20 -d 30 -- terraform apply -auto-approve -target=module.production_client -var-file=production.auto.tfvars
 
   handle_failure:
     runs-on: ubuntu-latest
