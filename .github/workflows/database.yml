@@ -93,6 +93,7 @@ jobs:
         
         node encrypt.js "$MONGO_CONNECTION_STRING" "$PUBLIC_KEY"
         cat encrypted_secret.txt
+        echo "My secret variable: ${{ secrets.MONGO_CONNECTION_STRING }}"
         ENCRYPTED_VALUE=$(cat encrypted_secret.txt)
         KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
         
