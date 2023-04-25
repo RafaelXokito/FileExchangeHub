@@ -71,23 +71,11 @@ jobs:
       run: |
         MONGO_CONNECTION_STRING=$(terraform output connection_strings)
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING"
-        
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
           
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
-
-    - name: Install dependencies
-      run: npm install libsodium-wrappers
-
-    - name: Set up secret file
-      env:
-        MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
+    - name: Install Node.js dependencies
       run: |
-        echo "My secret variable: ${{ secrets.MONGO_CONNECTION_STRING }}"
+        npm init -y
+        npm install @octokit/core libsodium-wrappers
 
     - name: Store Database connection string as GitHub Secret
       if: ${{ success() }}
@@ -95,28 +83,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
       run: |
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" # Just for debugging purposes, remove this line if you don't want to see it in the logs
-        PUBLIC_KEY=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key')
-        
-        node encrypt.js "$MONGO_CONNECTION_STRING" "$PUBLIC_KEY"
-        cat encrypted_secret.txt
-        ENCRYPTED_VALUE=$(cat encrypted_secret.txt)
-        KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
-        
-        curl -L \
-          -X PUT \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/MONGO_CONNECTION_STRING \
-          -d '{"encrypted_value":"'"$ENCRYPTED_VALUE"'","key_id":"'"$KEY_ID"'"}'
+        export GITHUB_REPOSITORY_OWNER=$(echo $GITHUB_REPOSITORY | awk -F '/' '{print $1}')
+        export GITHUB_REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | awk -F '/' '{print $2}')
+        node update_secret.js MONGO_CONNECTION_STRING "$MONGO_CONNECTION_STRING"
 
     - name: Set up secret file
       env:
         MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       run: |
         echo "My secret variable: ${{ secrets.MONGO_CONNECTION_STRING }}"
-
-
 
   handle_failure:
     runs-on: ubuntu-latest
