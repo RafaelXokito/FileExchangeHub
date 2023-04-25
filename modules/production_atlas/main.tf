@@ -37,7 +37,7 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
             node_count    = 3
         }
         region_name     = "EU_WEST_1"
-        priority        = 1
+        priority        = 7
     }
   }
 }
