@@ -10,24 +10,6 @@ variable "server_image" {
   default = ""
 }
 
-variable "socket_server_image" {
-  type        = string
-  description = "The Docker image for the Socket.io server."
-  default = ""
-}
-
-variable "file_gateway_image" {
-  type        = string
-  description = "The Docker image for the file-gateway server."
-  default = ""
-}
-
-variable "client_image" {
-  type        = string
-  description = "The Docker image for the client."
-  default = ""
-}
-
 variable "mongo_dbuser_password" {
   type        = string
   description = "MongoDB Atlas Database User Password"
@@ -44,4 +26,9 @@ variable "mongo_connection_string" {
   type = string
   description = "The mongo connection string"  
   default = ""
+}
+
+variable "gateway_uri" {
+  description = "The URI of the gateway service."
+  type        = string
 }

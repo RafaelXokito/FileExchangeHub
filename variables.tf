@@ -13,6 +13,15 @@ variable "socket_server_image" {
 variable "file_gateway_image" {
   default = ""
 }
+variable "server_uri" {
+  default = ""
+}
+variable "socket_server_uri" {
+  default = ""
+}
+variable "gateway_uri" {
+  default = ""
+}
 variable "mongo_connection_string" {
   default = ""
 }
