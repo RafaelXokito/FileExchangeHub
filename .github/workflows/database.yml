@@ -63,12 +63,22 @@ jobs:
           https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/MONGO_CONNECTION_STRING \
           -d '{"encrypted_value":"'"$(echo -n "$MONGO_CONNECTION_STRING" | gpg --symmetric --armor --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | awk '{printf "%s\\n", $0}')"'" ,"key_id":"'"$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')"'"}'
 
+    - name: List Secrets
+      if: ${{ success() }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        curl -X GET \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets" \
+          | jq '.secrets[] | .name'
 
   handle_failure:
     runs-on: ubuntu-latest
     needs: [deploy]
     if: ${{ failure() }}
     steps:
-      - uses: jayqi/failed-build-issue-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
