@@ -75,6 +75,14 @@ jobs:
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
           
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm install libsodium-wrappers
+
     - name: Store Database connection string as GitHub Secret
       if: ${{ success() }}
       env:
@@ -82,7 +90,9 @@ jobs:
       run: |
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" # Just for debugging purposes, remove this line if you don't want to see it in the logs
         PUBLIC_KEY=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key')
-        ENCRYPTED_VALUE=$(echo -n "$MONGO_CONNECTION_STRING" | openssl rsautl -encrypt -oaep -pubin -inkey <(echo "$PUBLIC_KEY" | base64 --decode) | base64 -w0)
+        
+        node encrypt.js "$MONGO_CONNECTION_STRING" "$PUBLIC_KEY"
+        ENCRYPTED_VALUE=$(cat encrypted_secret.txt)
         KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
         
         curl -L \
@@ -98,6 +108,7 @@ jobs:
         MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
       run: |
         echo "My secret variable: ${{ secrets.MONGO_CONNECTION_STRING }}"
+
 
 
   handle_failure:
