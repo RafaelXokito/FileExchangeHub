@@ -4,8 +4,8 @@ module "production_client" {
     project_id              = var.project_id
     client_image            = var.client_image
 
-    server_uri = var.server_uri
-    socket_server_uri = var.socket_server_uri
+    server_uri              = var.server_uri
+    socket_server_uri       = var.socket_server_uri
 }
 
 module "production_server" {
