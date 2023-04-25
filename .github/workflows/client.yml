@@ -71,12 +71,6 @@ jobs:
           echo "Required secrets not found. Waiting for 5 minutes before trying again."
           sleep 300
         done
-    
-    - name: Set up secret file
-      env:
-        MONGO_CONNECTION_STRING: ${{ secrets.SERVER_URI }}
-      run: |
-        echo "My secret variable: ${{ secrets.SERVER_URI }}"
         
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
