@@ -54,7 +54,7 @@ jobs:
       run: |
         attempts=0
         while true; do
-          mongo_connection_string=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/MONGO_CONNECTION_STRING" | jq -r '.name')
+          
 
           if [[ "$mongo_connection_string" == "MONGO_CONNECTION_STRING" ]]; then
             echo "Required secrets found. Proceeding with the deployment."
@@ -86,7 +86,6 @@ jobs:
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
         echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest\"" >> production.auto.tfvars
-        echo "mongo_connection_string = \"${{ secrets.MONGO_CONNECTION_STRING }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: terraform plan -target=module.production_gateway -var-file=production.auto.tfvars
@@ -97,17 +96,22 @@ jobs:
     - name: Export Terraform Outputs
       run: terraform output -json > outputs.json
           
-    - name: Store Gateway URI as GitHub Secret
+    - name: Store Gateway as GitHub Secret
       if: ${{ success() }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
       run: |
-        GATEWAY_URI=$(jq -r '.gateway_uri.value' outputs.json)
-        curl -X PUT \
-          -H "Authorization: token $GITHUB_TOKEN" \
+        echo "GATEWAY_URI=$GATEWAY_URI" # Just for debugging purposes, remove this line if you don't want to see it in the logs
+        ENCRYPTED_VALUE=$(echo -n "$GATEWAY_URI" | gpg --symmetric --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | base64 -w0)
+        KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
+        
+        curl -L \
+          -X PUT \
           -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/GATEWAY_URI \
-          -d '{"encrypted_value":"'"$(echo -n "$GATEWAY_URI" | gpg --symmetric --armor --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | awk '{printf "%s\\n", $0}')"'" ,"key_id":"'"$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')"'"}'
+          -d '{"encrypted_value":"'"$ENCRYPTED_VALUE"'","key_id":"'"$KEY_ID"'"}'
 
 
   handle_failure:
