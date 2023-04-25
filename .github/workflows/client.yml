@@ -94,11 +94,34 @@ jobs:
         echo "socket_server_uri = \"${{ secrets.SOCKET_SERVER_URI }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
-      run: retry -t 20 -d 30 -- terraform plan -target=module.production_client -var-file=production.auto.tfvars
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform plan -target=module.production_client -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
 
-    - name: Terraform Apply Services
-      run: retry -t 20 -d 30 -- terraform apply -auto-approve -target=module.production_client -var-file=production.auto.tfvars
-
+    - name: Terraform Apply
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform apply -auto-approve -target=module.production_client -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
   handle_failure:
     runs-on: ubuntu-latest
     needs: [docker-build-push, deploy]
