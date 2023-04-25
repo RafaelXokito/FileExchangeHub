@@ -13,7 +13,7 @@ provider "mongodbatlas" {
 }
 
 resource "mongodbatlas_project" "project" {
-  name   = "fileexchangehub"
+  name   = "filexchangehub"
   org_id = var.org_id
 }
 
@@ -28,13 +28,12 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
   project_id             = mongodbatlas_project.project.id
   name                   = "Cluster1"
   cluster_type           = "REPLICASET"
-  mongo_db_major_version = "4.2"
   replication_specs {
     region_configs {
-        provider_name                = "TENANT"
+        provider_name                = "AWS"
         backing_provider_name     =  "AWS"
         electable_specs {
-            instance_size = "M0"
+            instance_size = "M10"
         }
         region_name     = "EU_WEST_1"
         priority        = 1
