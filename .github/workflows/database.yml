@@ -48,8 +48,7 @@ jobs:
 
     - name: Extract Mongo Connection String
       run: |
-        MONGO_CONNECTION_STRING=$(jq -r '.connection_strings.value' outputs.json)
-        echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING"
+        MONGO_CONNECTION_STRING=$(python -c "import json; print(json.load(open('outputs.json'))['connection_strings']['value'])")
       
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
