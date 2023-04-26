@@ -70,7 +70,7 @@ jobs:
     - name: Extract Mongo Connection String
       id: extract_connection_string
       run: |
-        echo "MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings)" >> "$GITHUB_ENV"
+        echo "MONGO_CONNECTION_STRING=$(terraform output connection_strings)" >> "$GITHUB_ENV"
 
     - name: Set up secret file
       env:
