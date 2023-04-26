@@ -1,0 +1,134 @@
+name: Deploy File Gateway to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - release
+    paths:
+      - 'file-gateway/**'
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    
+    - name: Set up Google Cloud credentials for file-gateway
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > file-gateway/auth.json
+
+    - name: Build and push the file gateway image
+      uses: docker/build-push-action@v2
+      with:
+        context: file-gateway
+        file: file-gateway/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud credentials
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      run: terraform init -input=false -force-copy
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Set variables for Terraform
+      run: |
+        echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
+        echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:${{ github.sha }}\"" >> production.auto.tfvars
+
+    - name: Terraform Plan
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform plan -target=module.production_gateway -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
+
+    - name: Terraform Apply
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform apply -auto-approve -target=module.production_gateway -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
+    
+    - name: Extract Gateway URI
+      id: extract_gateway_uri
+      run: |
+        echo "GATEWAY_URI=$(terraform output gateway_uri)" >> "$GITHUB_ENV"
+
+    - name: Store Database connection string as GitHub Secret
+      if: ${{ success() }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
+      run: |
+        JSON_PAYLOAD="{\"name\":\"GATEWAY_URI\",\"value\":${GATEWAY_URI}}"
+        echo $JSON_PAYLOAD
+
+        VARS_GATEWAY_URI=${{ vars.GATEWAY_URI }}
+
+        if [ -z "$VARS_GATEWAY_URI" ]; then
+          echo "Variable does not exist. Creating a new variable..."
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables \
+            -d "$JSON_PAYLOAD"
+        else
+          echo "Variable exists. Updating the variable..."
+          VARIABLE_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/GATEWAY_URI"
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $VARIABLE_URL \
+            -d "$JSON_PAYLOAD"
+        fi
+        

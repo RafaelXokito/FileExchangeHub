@@ -1,0 +1,17 @@
+{
+  "connection_strings": {
+    "sensitive": false,
+    "type": "string",
+    "value": "mongodb+srv://cluster1.r3b2k.mongodb.net"
+  },
+  "development_client_url": {
+    "sensitive": false,
+    "type": "string",
+    "value": "http://localhost:8080"
+  },
+  "production_domain_service": {
+    "sensitive": false,
+    "type": "string",
+    "value": "filexchangehub.com"
+  }
+}

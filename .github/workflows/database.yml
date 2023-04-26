@@ -1,0 +1,106 @@
+name: Deploy Database to Mongo DB Atlas
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud credentials
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Init
+      run: terraform init -input=false -force-copy
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Set variables for Terraform
+      run: |
+        echo "mongo_org_id = \"${{ secrets.MONGO_ORG_ID }}\"" >> production.auto.tfvars
+        echo "mongo_public_key = \"${{ secrets.MONGO_PUBLIC_KEY }}\"" >> production.auto.tfvars        
+        echo "mongo_private_key = \"${{ secrets.MONGO_PRIVATE_KEY }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser_password = \"${{ secrets.MONGO_DBUSER_PASSWORD }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser = \"${{ secrets.MONGO_DBUSER }}\"" >> production.auto.tfvars
+
+    - name: Terraform Plan
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform plan -target=module.production_db -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
+
+    - name: Terraform Apply MongoDB
+      id: apply
+      run: |
+        MAX_RETRIES=20
+        RETRY_DELAY=30
+        count=0
+        until terraform apply -auto-approve -target=module.production_db -var-file=production.auto.tfvars; do
+          count=$((count + 1))
+          if [ $count -ge $MAX_RETRIES ]; then
+            echo "Failed after $MAX_RETRIES retries"
+            exit 1
+          fi
+          echo "Retrying in $RETRY_DELAY seconds (attempt $count of $MAX_RETRIES)"
+          sleep $RETRY_DELAY
+        done
+
+    - name: Extract Mongo Connection String
+      id: extract_connection_string
+      run: |
+        echo "MONGO_CONNECTION_STRING=$(terraform output connection_strings)" >> "$GITHUB_ENV"
+
+    - name: Store Database connection string as GitHub Secret
+      if: ${{ success() }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
+      run: |
+        JSON_PAYLOAD="{\"name\":\"MONGO_CONNECTION_STRING\",\"value\":${MONGO_CONNECTION_STRING}}"
+        echo $JSON_PAYLOAD
+
+        VARS_MONGO_CONNECTION_STRING=${{ vars.MONGO_CONNECTION_STRING }}
+
+        if [ -z "$VARS_MONGO_CONNECTION_STRING" ]; then
+          echo "Variable does not exist. Creating a new variable..."
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables \
+            -d "$JSON_PAYLOAD"
+        else
+          echo "Variable exists. Updating the variable..."
+          VARIABLE_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/MONGO_CONNECTION_STRING"
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $VARIABLE_URL \
+            -d "$JSON_PAYLOAD"
+        fi
