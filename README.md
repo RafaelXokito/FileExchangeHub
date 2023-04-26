@@ -153,7 +153,7 @@ docker-compose down
 
 ### GitHub Actions
 
-GitHub Actions automates the build and deployment process. The workflow file `.github/workflows/deploy.yml` contains the configuration for building, testing
+GitHub Actions automates the build and deployment process. The workflow files `.github/workflows/*.yml` contains the configuration for building, testing
 
 ## License
 
