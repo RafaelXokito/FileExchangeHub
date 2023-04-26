@@ -72,6 +72,8 @@ jobs:
       run: |
         echo "mongodb+srv://cluster1.r3b2k.mongodb.net" > "out.txt"
         echo "$(cat out.txt)"
+        echo "$(terraform output -raw connection_strings | sed 's/.$//')" > "out2.txt"
+        echo "$(cat out2.txt)"
         echo "action_state=\"mongodb+srv://cluster1.r3b2k.mongodb.net\"" >> "$GITHUB_ENV"
 
     - name: Set up secret file
