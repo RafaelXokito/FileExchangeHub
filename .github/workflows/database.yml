@@ -102,18 +102,3 @@ jobs:
             $VARIABLE_URL \
             -d "$JSON_PAYLOAD"
         fi
-
-    - name: Set up secret file
-      env:
-        MONGO_CONNECTION_STRING: ${{ vars.MONGO_CONNECTION_STRINGSSS }}
-      run: |
-        echo "My secret variable: $MONGO_CONNECTION_STRING"
-
-  handle_failure:
-    runs-on: ubuntu-latest
-    needs: [deploy]
-    if: ${{ failure() }}
-    steps:
-      - uses: JasonEtco/create-an-issue@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
