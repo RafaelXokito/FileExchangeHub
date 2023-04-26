@@ -91,7 +91,7 @@ jobs:
 
     - name: Set up secret file
       env:
-        MONGO_CONNECTION_STRING: ${{ vars.MONGO_CONNECTION_STRING }}
+        MONGO_CONNECTION_STRING: ${{ vars.MONGO_CONNECTION_STRINGSSS }}
       run: |
         echo "My secret variable: $MONGO_CONNECTION_STRING"
 
