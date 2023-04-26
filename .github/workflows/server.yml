@@ -45,37 +45,33 @@ jobs:
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
 
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
-
-    - name: Wait for required GitHub Secrets
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
+    - name: Wait for required GitHub Variables
       run: |
         attempts=0
         while true; do
-          gateway_uri=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/GATEWAY_URI" | jq -r '.name')
-          mongo_connection_string=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/MONGO_CONNECTION_STRING" | jq -r '.name')
+          gateway_uri=${{ vars.GATEWAY_URI }}
+          mongo_connection_string=${{ vars.MONGO_CONNECTION_STRING }}
 
-          if [[ "$gateway_uri" == "GATEWAY_URI" && "$mongo_connection_string" == "MONGO_CONNECTION_STRING"  ]]; then
-            echo "Required secrets found. Proceeding with the deployment."
+          if [[ ! -z "$gateway_uri" && ! -z "$mongo_connection_string" ]]; then
+            echo "Required variables found. Proceeding with the deployment."
             break
           fi
 
           attempts=$((attempts + 1))
-          if [[ $attempts -ge 3 ]]; then
-            echo "Failed to find required secrets after $attempts attempts. Failing the workflow."
+          if [[ $attempts -ge 20 ]]; then
+            echo "Failed to find required variables after $attempts attempts. Failing the workflow."
             exit 1
           fi
 
-          echo "Required secrets not found. Waiting for 5 minutes before trying again."
-          sleep 300
+          echo "Required variables not found. Waiting for 10 minutes before trying again."
+          sleep 30
         done
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_wrapper: false
 
     - name: Terraform Init
       run: terraform init -input=false -force-copy
@@ -87,7 +83,10 @@ jobs:
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
         echo "server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:latest\"" >> production.auto.tfvars
-        echo "gateway_uri = \"${{ secrets.GATEWAY_URI }}\"" >> production.auto.tfvars
+        echo "gateway_uri = \"${{ vars.GATEWAY_URI }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser = \"${{ secrets.MONGO_DBUSER }}\"" >> production.auto.tfvars
+        echo "mongo_dbuser_password = \"${{ secrets.MONGO_DBUSER_PASSWORD }}\"" >> production.auto.tfvars
+        echo "mongo_connection_string = \"${{ vars.MONGO_CONNECTION_STRING }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: |
@@ -120,51 +119,35 @@ jobs:
         done
 
     - name: Extract Server URI
+      id: extract_server_uri
       run: |
-        SERVER_URI=$(terraform output server_uri)
-        echo "SERVER_URI=$SERVER_URI"
+        echo "SERVER_URI=$(terraform output server_uri)" >> "$GITHUB_ENV"
 
-    - name: Store Server URI as GitHub Secret
+    - name: Store Database connection string as GitHub Secret
       if: ${{ success() }}
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PERMISSIONS }}
       run: |
-        echo "SERVER_URI=$SERVER_URI" # Just for debugging purposes, remove this line if you don't want to see it in the logs
-        ENCRYPTED_VALUE=$(echo -n "$SERVER_URI" | gpg --symmetric --cipher-algo AES256 --batch --passphrase="$GITHUB_TOKEN" | base64 -w0)
-        KEY_ID=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/public-key" | jq -r '.key_id')
-        
-        curl -L \
-          -X PUT \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/actions/secrets/SERVER_URI \
-          -d '{"encrypted_value":"'"$ENCRYPTED_VALUE"'","key_id":"'"$KEY_ID"'"}'
+        JSON_PAYLOAD="{\"name\":\"SERVER_URI\",\"value\":${SERVER_URI}}"
+        echo $JSON_PAYLOAD
 
-  handle_failure:
-    runs-on: ubuntu-latest
-    needs: [docker-build-push, deploy]
-    if: ${{ failure() }}
-    steps:
-      - name: Create issue on failure
-        uses: actions/github-script@v6
-        with:
-          token: ${{ secrets.GH_ISSUE_CREATOR_TOKEN }}
-          script: |
-            const issueTitle = "Deployment Server Workflow Failed";
-            let errorMessage = '';
-            if (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') {
-              errorMessage = github.event.workflow_run.head_commit.message;
-            }
-            const issueBody = `Workflow **${process.env.GITHUB_WORKFLOW}** failed on the branch **${process.env.GITHUB_REF}**. The error message is as follows:
-            \`\`\`
-            ${errorMessage}
-            \`\`\`
-            Please fix the issue.`;
-            
-            const newIssue = await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: issueTitle,
-              body: issueBody
-            });
+        if [ -z "$SERVER_URI" ]; then
+          echo "Variable does not exist. Creating a new variable..."
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables \
+            -d "$JSON_PAYLOAD"
+        else
+          echo "Variable exists. Updating the variable..."
+          VARIABLE_URL="https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/SERVER_URI"
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            $VARIABLE_URL \
+            -d "$JSON_PAYLOAD"
+        fi

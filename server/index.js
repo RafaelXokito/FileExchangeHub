@@ -222,7 +222,7 @@ app.get("/api/rooms/:roomCode/messages", async (req, res) => {
 app.get("/api/rooms/:roomCode/messages/:fileUrl", async (req, res) => {
   const fileUrl = req.params.fileUrl;
   const roomCode = req.params.roomCode;
- 
+  
   try {
     const room = await Room.findOne({
       roomCode,
