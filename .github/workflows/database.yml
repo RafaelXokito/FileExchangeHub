@@ -69,22 +69,6 @@ jobs:
           sleep $RETRY_DELAY
         done
 
-    - name: Set the value
-      id: step_one
-      run: |
-        echo "mongodb+srv://cluster1.r3b2k.mongodb.net" > "out.txt"
-        echo "$(terraform output -raw connection_strings | sed 's/.$//')" > "out2.txt"
-        echo "$(cat out.txt)"
-        echo "${{steps.apply.outputs.connection_strings}}"
-        echo "START$(cat out2.txt)END"
-        echo "action_state=\"mongodb+srv://cluster1.r3b2k.mongodb.net\"" >> "$GITHUB_ENV"
-
-    - name: Set up secret file
-      env:
-        MONGO_CONNECTION_STRING: ${{ env.action_state }}
-      run: |
-        echo "My secret variable: $MONGO_CONNECTION_STRING"
-
     - name: Extract Mongo Connection String
       id: extract_connection_string
       run: |

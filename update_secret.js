@@ -25,7 +25,7 @@ const secretValue = process.argv[3];
   });
 
   // Encrypt the secret using the public key
-  const encryptedValue = sodium.crypto_box_seal_easy(secretValue, sodium.from_base64(publicKey.key, sodium.base64_variants.ORIGINAL), 'base64', sodium.base64_variants.ORIGINAL);
+  const encryptedValue = sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(secretValue), sodium.from_base64(publicKey.key, sodium.base64_variants.ORIGINAL)), sodium.base64_variants.ORIGINAL);
 
   // Update or create the secret in the GitHub repository
   await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
