@@ -20,6 +20,7 @@ A powerful and user-friendly platform for exchanging files across different serv
     - [Terraform](#terraform)
     - [Docker](#docker)
     - [GitHub Actions](#github-actions)
+  - [License](#license)
 
 ## Features
 
@@ -86,9 +87,21 @@ This project uses GitHub Actions, Terraform, and Docker to deploy to Google Clou
 
 ### Terraform
 
-Terraform is used to manage the infrastructure and provision resources for the project. Configuration files can be found in the modules directory for both production and development environments. It's the user's responsibility to ensure that all required variables are set correctly.
+Terraform is used to manage the infrastructure and provision resources for the project. Configuration files can be found in the modules directory for both production and development environments. It's the user's responsibility to ensure that all required variables are set correctly. The production environment is divided into five modules: "production_db" which sets up the service from MongoDB Atlas; "production_client" which sets up the client-side resources; "production_server" which sets up the server-side resources; "production_socket_server" which sets up the socket server resources; and "production_gateway" which sets up the gateway resources. Each of these modules is responsible for setting up the necessary services and domain content for their respective parts of the application to work.
 
-If you want to target a specific module, use the -target=module.{production/development} flag with your Terraform commands.
+To deploy the development module without having the Google Authentication credentials you should remove the terraform backend in the `main.tf` file on the root directory. Heres the code you should remove:
+
+```
+terraform {
+    backend "gcs" {
+        bucket = "fileexchangehub-terraform"
+        prefix  = "terraform/state"
+        credentials = "./auth.json"
+    }
+}
+```
+
+If you want to target a specific module, use the -target=module.{production_client/production_server/production_socket_server/production_gateway/production_db/development} flag with your Terraform commands.
 
 To use Terraform for deploying the infrastructure, follow these steps:
 
@@ -104,22 +117,22 @@ terraform init
 terraform validate
 ```
 
-3. Review the execution plan, targeting a specific module (production or development):
+Review the execution plan, targeting a specific module (production_client, production_server, production_socket_server, production_gateway, production_db, development):
 
 ```
-terraform plan -target=module.{production/development}
+terraform plan -target=module.{production_client/production_server/production_socket_server/production_gateway/production_db/development}
 ```
 
 4. Apply the changes to the infrastructure, targeting a specific module:
 
 ```
-terraform apply -target=module.{production/development}
+terraform apply -target=module.{production_client/production_server/production_socket_server/production_gateway/production_db/development}
 ```
 
 5. (Optional) Destroy the infrastructure, targeting a specific module:
 
 ```
-terraform destroy -target=module.{production/development}
+terraform destroy -target=module.{production_client/production_server/production_socket_server/production_gateway/production_db/development}
 ```
 
 ### Docker
@@ -142,3 +155,6 @@ docker-compose down
 
 GitHub Actions automates the build and deployment process. The workflow file `.github/workflows/deploy.yml` contains the configuration for building, testing
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
