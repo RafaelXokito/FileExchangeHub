@@ -19,16 +19,16 @@ const secretValue = process.argv[3];
   const octokit = new Octokit({ auth: token });
 
   // Fetch public key for the repository
-  const { data: publicKey } = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
+  const { data: publicKey } = await octokit.request('GET /repos/{owner}/{repo}/actions/variables/public-key', {
     owner,
     repo,
   });
 
   // Encrypt the secret using the public key
   const encryptedValue = sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(secretValue), sodium.from_base64(publicKey.key, sodium.base64_variants.ORIGINAL)), sodium.base64_variants.ORIGINAL);
-
+  console.log(`encryptedValue = ${encryptedValue}`);
   // Update or create the secret in the GitHub repository
-  await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
+  await octokit.request('PUT /repos/{owner}/{repo}/actions/variables/{secret_name}', {
     owner,
     repo,
     secret_name: secretName,

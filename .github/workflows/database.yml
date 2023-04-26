@@ -99,9 +99,9 @@ jobs:
 
     - name: Set up secret file
       env:
-        MONGO_CONNECTION_STRING: ${{ secrets.MONGO_CONNECTION_STRING }}
+        MONGO_CONNECTION_STRING: ${{ vars.MONGO_CONNECTION_STRING }}
       run: |
-        echo "My secret variable: ${{ secrets.MONGO_CONNECTION_STRING }}"
+        echo "My secret variable: $MONGO_CONNECTION_STRING"
 
   handle_failure:
     runs-on: ubuntu-latest
