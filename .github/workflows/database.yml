@@ -67,31 +67,14 @@ jobs:
           sleep $RETRY_DELAY
         done
 
-    - name: Set the value
-      id: step_one
-      run: |
-        echo "action_state=yellow" >> "$GITHUB_ENV"
-
-    - name: Set up secret file
-      env:
-        MONGO_CONNECTION_STRING: ${{ env.action_state }}
-      run: |
-        echo "My secret variable: $MONGO_CONNECTION_STRING"
-
     - name: Extract Mongo Connection String
       id: extract_connection_string
       run: |
-        MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings)
-        echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" >> $GITHUB_OUTPUT
-
-    - name: Set the value
-      id: step_two
-      run: |
-        echo "action_state=yellow" >> "$GITHUB_ENV"
+        echo "MONGO_CONNECTION_STRING=$(terraform output -raw connection_strings)" >> "$GITHUB_ENV"
 
     - name: Set up secret file
       env:
-        MONGO_CONNECTION_STRING: ${{ env.action_state }}
+        MONGO_CONNECTION_STRING: ${{ env.MONGO_CONNECTION_STRING }}
       run: |
         echo "My secret variable: $MONGO_CONNECTION_STRING"
 
