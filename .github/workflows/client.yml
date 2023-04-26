@@ -63,7 +63,7 @@ jobs:
             exit 1
           fi
 
-          echo "Required variables not found. Waiting for 10 minutes before trying again."
+          echo "Required variables not found. Waiting for 30 seconds before trying again."
           sleep 30
         done
         
