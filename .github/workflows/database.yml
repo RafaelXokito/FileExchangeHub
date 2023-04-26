@@ -53,6 +53,7 @@ jobs:
         done
 
     - name: Terraform Apply MongoDB
+      id: apply
       run: |
         MAX_RETRIES=20
         RETRY_DELAY=30
@@ -73,6 +74,7 @@ jobs:
         echo "mongodb+srv://cluster1.r3b2k.mongodb.net" > "out.txt"
         echo "$(terraform output -raw connection_strings | sed 's/.$//')" > "out2.txt"
         echo "$(cat out.txt)"
+        echo "${{steps.apply.outputs.connection_strings}}"
         echo "START$(cat out2.txt)END"
         echo "action_state=\"mongodb+srv://cluster1.r3b2k.mongodb.net\"" >> "$GITHUB_ENV"
 
