@@ -82,7 +82,9 @@ jobs:
         JSON_PAYLOAD="{\"name\":\"MONGO_CONNECTION_STRING\",\"value\":${MONGO_CONNECTION_STRING}}"
         echo $JSON_PAYLOAD
 
-        if [ -z "$MONGO_CONNECTION_STRING" ]; then
+        VARS_MONGO_CONNECTION_STRING=${{ vars.MONGO_CONNECTION_STRING }}
+
+        if [ -z "$VARS_MONGO_CONNECTION_STRING" ]; then
           echo "Variable does not exist. Creating a new variable..."
           curl -L \
             -X POST \

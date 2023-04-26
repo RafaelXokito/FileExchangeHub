@@ -105,7 +105,9 @@ jobs:
         JSON_PAYLOAD="{\"name\":\"SOCKET_SERVER_URI\",\"value\":${SOCKET_SERVER_URI}}"
         echo $JSON_PAYLOAD
 
-        if [ -z "$SOCKET_SERVER_URI" ]; then
+        VARS_SOCKET_SERVER_URI=${{ vars.SOCKET_SERVER_URI }}
+
+        if [ -z "$VARS_SOCKET_SERVER_URI" ]; then
           echo "Variable does not exist. Creating a new variable..."
           curl -L \
             -X POST \

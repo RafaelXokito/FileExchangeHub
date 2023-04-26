@@ -105,7 +105,9 @@ jobs:
         JSON_PAYLOAD="{\"name\":\"GATEWAY_URI\",\"value\":${GATEWAY_URI}}"
         echo $JSON_PAYLOAD
 
-        if [ -z "$GATEWAY_URI" ]; then
+        VARS_GATEWAY_URI=${{ vars.GATEWAY_URI }}
+
+        if [ -z "$VARS_GATEWAY_URI" ]; then
           echo "Variable does not exist. Creating a new variable..."
           curl -L \
             -X POST \
