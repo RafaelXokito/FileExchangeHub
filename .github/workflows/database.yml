@@ -70,6 +70,8 @@ jobs:
     - name: Set the value
       id: step_one
       run: |
+        echo "mongodb+srv://cluster1.r3b2k.mongodb.net" > "out.txt"
+        echo "$(cat out.txt)"
         echo "action_state=\"mongodb+srv://cluster1.r3b2k.mongodb.net\"" >> "$GITHUB_ENV"
 
     - name: Set up secret file
