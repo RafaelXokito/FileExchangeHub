@@ -85,7 +85,7 @@ jobs:
         echo "MONGO_CONNECTION_STRING=$MONGO_CONNECTION_STRING" >> $GITHUB_OUTPUT
 
     - name: Set the value
-      id: step_one
+      id: step_two
       run: |
         echo "action_state=yellow" >> "$GITHUB_ENV"
 
