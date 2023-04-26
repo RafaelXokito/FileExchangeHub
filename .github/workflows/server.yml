@@ -30,7 +30,7 @@ jobs:
         context: server
         file: server/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:latest
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
     - name: Set variables for Terraform
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
-        echo "server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:latest\"" >> production.auto.tfvars
+        echo "server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubserver:${{ github.sha }}\"" >> production.auto.tfvars
         echo "gateway_uri = \"${{ vars.GATEWAY_URI }}\"" >> production.auto.tfvars
         echo "mongo_dbuser = \"${{ secrets.MONGO_DBUSER }}\"" >> production.auto.tfvars
         echo "mongo_dbuser_password = \"${{ secrets.MONGO_DBUSER_PASSWORD }}\"" >> production.auto.tfvars

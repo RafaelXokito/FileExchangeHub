@@ -34,7 +34,7 @@ jobs:
         context: file-gateway
         file: file-gateway/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,7 +64,7 @@ jobs:
     - name: Set variables for Terraform
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
-        echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:latest\"" >> production.auto.tfvars
+        echo "file_gateway_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubfilegateway:${{ github.sha }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: |

@@ -30,7 +30,7 @@ jobs:
         context: socket-server
         file: socket-server/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:latest
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
     - name: Set variables for Terraform
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
-        echo "socket_server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:latest\"" >> production.auto.tfvars
+        echo "socket_server_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubsocketserver:${{ github.sha }}\"" >> production.auto.tfvars
 
     - name: Terraform Plan
       run: |

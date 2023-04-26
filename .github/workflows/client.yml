@@ -30,7 +30,7 @@ jobs:
         context: client
         file: client/Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubclient:latest
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubclient:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
     - name: Set variables for Terraform
       run: |
         echo "project_id = \"${{ secrets.PROJECT_ID }}\"" >> production.auto.tfvars
-        echo "client_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubclient:latest\"" >> production.auto.tfvars
+        echo "client_image = \"${{ secrets.DOCKER_HUB_USERNAME }}/fileexchangehubclient:${{ github.sha }}\"" >> production.auto.tfvars
         echo "server_uri = \"${{ vars.SERVER_URI }}\"" >> production.auto.tfvars
         echo "socket_server_uri = \"${{ vars.SOCKET_SERVER_URI }}\"" >> production.auto.tfvars
 
