@@ -19,8 +19,9 @@ jobs:
         echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/auth.json" >> $GITHUB_ENV
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2
       with:
+        terraform_wrapper: false
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform Init
