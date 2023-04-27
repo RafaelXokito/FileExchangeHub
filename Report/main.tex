@@ -18,7 +18,7 @@
 %% double column output.
 
 %\documentclass[a4paper,fleqn,longmktitle]{cas-dc}
-\documentclass[a4paper,fleqn]{cas-sc}
+\documentclass[a4paper,fleqn]{cas-dc}
 
 %\usepackage[authoryear,longnamesfirst]{natbib}
 %\usepackage[authoryear]{natbib}
@@ -92,17 +92,19 @@ Decentralized platform \sep Microservices architecture \sep Google Cloud Platfor
 
 \section{Introduction}
 
-The rapid growth of cloud computing and microservices has revolutionized the way applications are developed and deployed \cite{}. As a result, there is an increasing need for effective strategies to manage the complexity and scalability of these systems \cite{}. This report explores the design and provisioning of a distributed cloud-based file exchange hub that utilizes containerization, microservices, and cloud services to achieve high availability, performance, and maintainability.
+The rapid growth of cloud computing and microservices has revolutionized the way applications are developed and deployed \cite{Selvakumar2023}. As a result, there is an increasing need for effective strategies to manage the complexity and scalability of these systems \cite{Correia2018}. This paper explores the design and provisioning of a distributed cloud-based file exchange hub that utilizes containerization, microservices, and cloud services to achieve high availability, performance, and maintainability.
 
 The file exchange hub aims to provide an efficient platform for users to share files with others. By utilizing a decentralized approach, the hub ensures enhanced privacy and control over shared data, while also promoting better performance and availability. The system leverages the power and flexibility of modern cloud computing technologies, such as containerization, microservices, and cloud services, to deliver a streamlined and scalable solution.
 
 The proposed solution is divided into four main modules: Presentation Provider (Nginx), API (Express), Asynchronous Message Communication server (Socket.IO), and Database (MongoDB Atlas). Each module is designed to serve a specific purpose and can scale independently to adapt to changing loads and requirements. The application also leverages Google Cloud Platform (GCP) services such as Cloud Run, Cloud Storage Bucket, and Cloud DNS for deployment, file management, and domain management. The Presentation Provider service is mapped to a custom domain, \url{filexchangehub.com}.
 
-The report is structured as follows: Section \ref{sec:architecture} presents the architecture of the application, detailing the purpose and design of each module. Section \ref{sec:scenarios} discusses the two scenarios in which our application can be set up and run, namely the local and cloud scenarios, and outlines their respective architectures and communication patterns. Section \ref{sec:provisioning} describes the provisioning process, emphasizing the use of GCP services, Terraform, and GitHub Actions to automate and streamline the application components' deployment. Section \ref{sec:discussion} provides a comprehensive discussion of the different scenarios, and difficulties faced during provisioning, and offers recommendations for developers working on similar projects. Finally, the report concludes with a summary of the key findings and insights gained from the project.
+The main contributions of this paper lie in the exploration and implementation of a distributed, cloud-based file exchange hub that leverages cutting-edge technologies and architectural patterns to address the challenges associated with complexity and scalability in modern applications. The proposed solution showcases the effective use of containerization, microservices, and cloud services to achieve high levels of availability, performance, and maintainability. Furthermore, this paper provides valuable insights into the provisioning and deployment processes, as well as the challenges faced during development and implementation, which can serve as a useful reference for developers and researchers working on similar projects. By analyzing the design, implementation, and real-world application scenarios, this paper contributes to the growing body of knowledge on how to build and manage robust, scalable cloud-based systems in the era of microservices and distributed computing.
+
+The paper is structured as follows: Section \ref{sec:architecture} presents the architecture of the application, detailing the purpose and design of each module. Section \ref{sec:scenarios} discusses the two scenarios in which our application can be set up and run, namely the local and cloud scenarios, and outlines their respective architectures and communication patterns. Section \ref{sec:provisioning} describes the provisioning process, emphasizing the use of GCP services, Terraform, and GitHub Actions to automate and streamline the application components' deployment. Section \ref{sec:discussion} provides a comprehensive discussion of the different scenarios, and difficulties faced during provisioning, and offers recommendations for developers working on similar projects. Finally, the paper concludes with a summary of the key findings and insights gained from the project.
 
 \section{Architecture}\label{sec:architecture}
 
-This project follows a microservices architecture, which allows for improved scalability, resilience, and maintainability. The system is divided into several main components, each responsible for a specific aspect of the application. The following list introduces the primary components and their respective responsibilities:
+This project follows a microservices architecture, which allows for improved scalability, resilience, and maintainability \cite{Taibi2017}. The system is divided into several main components, each responsible for a specific aspect of the application. The following list introduces the primary components and their respective responsibilities:
 
 \begin{itemize}
 \item Presentation Provider (Nginx): This component acts as the frontend server, hosting the React web application and serving static files. It is responsible for delivering the user interface to the clients and handling incoming HTTP requests.
@@ -110,34 +112,29 @@ This project follows a microservices architecture, which allows for improved sca
 \item Asynchronous Message Communication Server (Socket.io): This server enables real-time communication between the clients, ensuring that users in the same room receive instant updates when a new file is shared.
 \item Database (MongoDB): The database stores information about the rooms, users, and file metadata, including the bucket URL and timestamp. MongoDB was chosen for its flexibility, scalability, and performance.
 \item File Gateway (Express): The File Gateway service is an Express.js application designed to efficiently stream files between clients and the cloud storage service. It acts as an intermediary, managing incoming file requests and delivering the requested files to the clients.
-\item Cloud Storage Bucket (Azure Blob Storage): This component stores the uploaded files, providing a reliable and scalable storage solution.
 \end{itemize}
 
 In this architecture, each component communicates with the others through well-defined interfaces, allowing for efficient collaboration and easy maintenance. The use of containerization and cloud-native deployment further enhances the system's scalability and resilience.
 
 \subsection{Presentation Provider: Nginx-based Frontend}
 
-The presentation layer of our file exchange hub is built using a React web application. We utilize Nginx as a reverse proxy and web server to serve the static content generated by the React application. Nginx offers excellent performance, stability, and low resource usage, making it an ideal choice for our frontend. Furthermore, its ability to handle a large number of simultaneous connections ensures a responsive user experience, even during peak loads.
+The presentation layer of our file exchange hub is built using a React web application. We utilize Nginx as a reverse proxy and web server to serve the static content generated by the React application. Nginx offers excellent performance, stability, and low resource usage, making it an ideal choice for our frontend \cite{Li2020}. Furthermore, its ability to handle a large number of simultaneous connections ensures a responsive user experience, even during peak loads.
 
 \subsection{API: Express-based File Management Service}
 
-Our file management service is implemented using Node.js with the Express framework, providing a robust and scalable API for managing file metadata and coordinating file transfers. This service is responsible for handling managing file metadata and communicating with the File Gateway service for actual file uploads and downloads. Express is chosen for its ease of use, extensive documentation, and compatibility with Node.js, which allows for efficient development and seamless integration with other components of the File Exchange Hub.
+Our file management service is implemented using Node.js with the Express framework, providing a robust and scalable API for managing file metadata and coordinating file transfers. This service is responsible for handling managing file metadata and communicating with the File Gateway service for actual file uploads and downloads. Express is chosen for its ease of use, and compatibility with Node.js, which allows for efficient development and seamless integration \cite{Poulter2015} with other components of the File Exchange Hub.
 
 \subsection{Database: MongoDB}
 
-MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. It's flexible schema and horizontal scalability make it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data. Additionally, MongoDB provides a rich query language and high-performance indexing capabilities, allowing for efficient data retrieval and manipulation.
+MongoDB, a NoSQL database, is utilized to store information about rooms, files, and users. It's flexible schema and horizontal scalability make it a fitting choice for our cloud-native application, as it can easily adapt to changing requirements and handle large volumes of data \cite{Boicea2012}. Additionally, MongoDB provides a rich query language and high-performance indexing capabilities, allowing for efficient data retrieval and manipulation \cite{Wang2014}.
 
 \subsection{Asynchronous Message Communication Server: Socket.IO}
 
-To enable real-time communication and notifications within our file exchange hub, we employ Socket.IO, a popular library for real-time web applications. This server facilitates instant messaging between users in the same room, ensuring a seamless and interactive experience for all participants. Socket.IO is selected for its flexibility, reliability, and compatibility with various platforms and transports, making it a powerful solution for real-time communication in our application.
+To enable real-time communication and notifications within our file exchange hub, we employ Socket.IO, a popular library for real-time web applications. This server facilitates instant messaging between users in the same room, ensuring a seamless and interactive experience for all participants. Socket.IO is selected for its flexibility, reliability, and compatibility with various platforms and transports, making it a powerful solution for real-time communication in our application \cite{Ray2020}.
 
 \subsection{File Gateway: Express-based File Streaming Service}
 
 The File Gateway service is built with the Express framework, chosen for its simplicity, and compatibility with Node.js. It efficiently streams files between clients and local/cloud storage service by managing incoming file requests and delivering the requested files to the clients. Express provides a robust set of features that simplify the development process and enable seamless integration with other components of the File Exchange Hub.
-
-\subsection{Cloud Storage Bucket: Azure Blob Storage}
-
-To store and manage the actual files exchanged by users, we leverage Azure Blob Storage. This fully managed object storage service offers high availability, durability, and scalability, allowing our file exchange hub to efficiently store, retrieve, and share files. The choice of Azure Blob Storage is driven by its integration with other Azure services, its security features, and its cost-effective pricing model, making it a suitable solution for our application's file storage needs.
 
 \section{Scenarios} \label{sec:scenarios}
 
@@ -149,7 +146,7 @@ In the local scenario, all components are hosted and run locally on the develope
 
 \begin{figure}[htb]
 \centering
-\includegraphics[width=9cm]{LocalArch.jpeg}
+\includegraphics[width=8cm]{LocalArch.jpeg}
 \caption{Local system architecture diagram.}
 \label{fig:architectureLocal}
 \end{figure}
@@ -211,19 +208,19 @@ Google Cloud Platform (GCP) and MongoDB Atlas provide a suite of cloud services 
 
 \subsubsection{Cloud Run: Scalable Containerized Services}
 
-Google Cloud Run is a serverless platform that enables the deployment and management of containerized applications. By leveraging the power of containers, Cloud Run allows developers to focus on writing code without worrying about the underlying infrastructure. The platform automatically scales applications based on demand, ensuring optimal resource usage and minimizing costs.
+Google Cloud Run \cite{Burkat2021} is a serverless platform that enables the deployment and management of containerized applications. By leveraging the power of containers, Cloud Run allows developers to focus on writing code without worrying about the underlying infrastructure. The platform automatically scales applications based on demand, ensuring optimal resource usage and minimizing costs.
 
 \subsubsection{Google Cloud Storage: Storing Files and Terraform State}
 
-Google Cloud Storage is a highly scalable and durable object storage service. In this project, we used Google Cloud Storage for two purposes: storing the uploaded files from users in one bucket and storing the Terraform state in another dedicated bucket. By storing the Terraform state in a cloud storage bucket, we enable team members to collaborate on infrastructure changes and maintain a persistent and version-controlled state.
+Google Cloud Storage\footnote{ \url{https://cloud.google.com/storage/}.} is a highly scalable and durable object storage service. In this project, we used Google Cloud Storage for two purposes: storing the uploaded files from users in one bucket and storing the Terraform state in another dedicated bucket. By storing the Terraform state in a cloud storage bucket, we enable team members to collaborate on infrastructure changes and maintain a persistent and version-controlled state.
 
 \subsubsection{Google Cloud DNS: Custom Domain Configuration}
 
-Google Cloud DNS is a high-performance, resilient, and global DNS service that enables the mapping of the Presentation Provider service to the custom domain \url{https://filexchangehub.com}. By utilizing Google Cloud DNS, we can manage DNS records programmatically using Terraform, ensuring that our domain configurations are version-controlled and easily updatable.
+Google Cloud DNS\footnote{ \url{https://cloud.google.com/dns/}.} is a high-performance, resilient, and global DNS service that enables the mapping of the Presentation Provider service to the custom domain \url{https://filexchangehub.com}. By utilizing Google Cloud DNS, we can manage DNS records programmatically using Terraform, ensuring that our domain configurations are version-controlled and easily updatable.
 
 \subsubsection{MongoDB Atlas: Managed Database Cluster}
 
-MongoDB Atlas is a fully managed, global, and scalable cloud database service that provides a powerful and flexible platform for deploying, managing, and scaling a MongoDB cluster. In this project, we used MongoDB Atlas to deploy and manage our database cluster, ensuring optimal performance, high availability, and seamless scalability. By configuring the MongoDB Atlas cluster through a dedicated Terraform module, we can maintain a version-controlled and easily auditable infrastructure for our database.
+MongoDB Atlas\footnote{ \url{https://www.mongodb.com/atlas/}.} is a fully managed, global, and scalable cloud database service that provides a powerful and flexible platform for deploying, managing, and scaling a MongoDB cluster \cite{Huang2015}. In this project, we used MongoDB Atlas to deploy and manage our database cluster, ensuring optimal performance, high availability, and seamless scalability. By configuring the MongoDB Atlas cluster through a dedicated Terraform module, we can maintain a version-controlled and easily auditable infrastructure for our database.
 
 The combination of GCP services and MongoDB Atlas allows us to build a scalable, resilient, and efficient file exchange system that demonstrates the power and flexibility of modern cloud computing technologies for software applications.
 
@@ -261,9 +258,9 @@ Throughout the project, we encountered numerous challenges, such as managing dep
 %% Loading bibliography style file
 %\bibliographystyle{model1-num-names}
 %\bibliographystyle{cas-model2-names}
-%\bibliographystyle{unsrt} % Estilo de Bibliografia
+\bibliographystyle{unsrt} % Estilo de Bibliografia
 % Loading bibliography database
-%\bibliography{cas-refs}
+\bibliography{cas-refs}
 
 
 %\vskip3pt
