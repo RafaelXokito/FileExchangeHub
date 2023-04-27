@@ -1,29 +1,47 @@
 variable "project_id" {
-  default = ""
+  type        = string
+  description = "Unique identifier for the project"
+  default     = ""
 }
 variable "client_image" {
-  default = ""
+  type        = string
+  description = "Docker image for the client application"
+  default     = ""
 }
 variable "server_image" {
-  default = ""
+  type        = string
+  description = "Docker image for the server application"
+  default     = ""
 }
 variable "socket_server_image" {
-  default = ""
+  type        = string
+  description = "Docker image for the socket server"
+  default     = ""
 }
 variable "file_gateway_image" {
-  default = ""
+  type        = string
+  description = "Docker image for the file gateway"
+  default     = ""
 }
 variable "server_uri" {
-  default = ""
+  type        = string
+  description = "URI for the server application"
+  default     = ""
 }
 variable "socket_server_uri" {
-  default = ""
+  type        = string
+  description = "URI for the socket server"
+  default     = ""
 }
 variable "gateway_uri" {
-  default = ""
+  type        = string
+  description = "URI for the file gateway"
+  default     = ""
 }
 variable "mongo_connection_string" {
-  default = ""
+  type        = string
+  description = "Connection string to connect to the MongoDB Atlas cluster"
+  default     = ""
 }
 variable "mongo_public_key" {
   type        = string
