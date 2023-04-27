@@ -133,7 +133,12 @@
     height: 20px;
 }
 
-
+.selectedFileName {
+    position: absolute;
+    bottom: 60px;
+    left: 20px;
+}
+  
 
 
 @media (max-width: 768px) {

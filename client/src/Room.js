@@ -16,10 +16,15 @@ function Room() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const history = useNavigate();
 
   const handleBack = () => {
     history(-1);
+  };
+
+  const handleFileInputChange = (e) => {
+    setSelectedFileName(e.target.files.length ? e.target.files[0].name : "");
   };
 
   useEffect(() => {
@@ -116,12 +121,26 @@ function Room() {
             </div>
           ))}
         </div>
+        {selectedFileName && (
+          <div className="message">
+              {selectedFileName}
+          </div>
+        )}
       </div>
       <div className="input-container">
         <form onSubmit={sendMessage} className="fileInputContainer">
-          <input type="file" id="fileInput" className="fileInput" />
-          <label htmlFor="fileInput" className="fileInputLabel"><FaFileUpload /></label>
-          <button type="submit" className="sendButton"><FaPaperPlane /></button>
+          <input
+            type="file"
+            id="fileInput"
+            className="fileInput"
+            onChange={handleFileInputChange}
+          />
+          <label htmlFor="fileInput" className="fileInputLabel">
+            <FaFileUpload />
+          </label>
+          <button type="submit" className="sendButton">
+            <FaPaperPlane />
+          </button>
         </form>
       </div>
       {isLoading && <LoadingPopup />} 

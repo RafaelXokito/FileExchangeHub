@@ -139,10 +139,16 @@ terraform destroy -target=module.{production_client/production_server/production
 
 Docker is used to containerize the services for easy deployment and management. Each service has its own `Dockerfile` for building images, and the `docker-compose.yml` file is used to manage containers in the development environment.
 
-To start the containers using Docker Compose, run:
+To start the containers using Docker Compose (-d flag for “detached” mode) run:
 
 ```
-docker-compose up
+docker-compose up -d
+```
+
+To start the containers using Docker Compose and force building images use --build flag:
+
+```
+docker-compose up -d --build
 ```
 
 To stop the containers, use:
