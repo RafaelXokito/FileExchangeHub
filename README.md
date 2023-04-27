@@ -1,6 +1,6 @@
 # File Exchange Hub
 
-A powerful and user-friendly platform for exchanging files across different services with seamless integration. This project includes an Express server, a Socket.IO server, a file gateway, and a client, creating an efficient and secure way for users to transfer files between various services.
+A powerful platform for exchanging files across different services with seamless integration is available on [https://filexchangehub](https://filexchangehub.com/). This project includes an Express server, a Socket.IO server, a file gateway, and a client, creating an efficient and secure way for users to transfer files between various services.
 
 <p align="center">
   <img src="assets/home.png" alt="Home Image" width="45%" />
