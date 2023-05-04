@@ -13,10 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set up Google Cloud credentials
+      run: |
+        echo '${{ secrets.GOOGLE_CREDENTIALS }}' > auth.json
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_wrapper: false
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform Init
       run: terraform init -input=false -force-copy
