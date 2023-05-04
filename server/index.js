@@ -10,7 +10,7 @@ const FormData = require("form-data");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
+ 
 var database_uri = process.env.DATABASE_URI || "localhost";
 var file_gateway_uri = process.env.FILE_GATEWAY_URI || "http://localhost:3003";
 // Replace 'your-database-name' with the name of your database

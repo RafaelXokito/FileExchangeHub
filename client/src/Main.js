@@ -45,7 +45,7 @@ function Main() {
           <a href="https://www.flaticon.com/free-icons/folder" title="Folder icons created by Freepik - Flaticon">
             Folder icons created by Freepik - Flaticon
           </a>
-        </p>
+        </p> 
       </footer>
     </div>
   );
